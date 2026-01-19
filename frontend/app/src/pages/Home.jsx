@@ -31,6 +31,8 @@ export default function Home() {
                     el: ".visual-pagination",
                   }}
                   loop={true}
+                  allowTouchMove={false}
+                  simulateTouch={false}
                   className="visual-slider"
                 >
                   <SwiperSlide>
@@ -195,6 +197,8 @@ export default function Home() {
                       768: { slidesPerView: 2 },
                       1024: { slidesPerView: 3 },
                     }}
+                    allowTouchMove={false}
+                    simulateTouch={false}
                     className="contents-slide"
                   >
                     <SwiperSlide>
