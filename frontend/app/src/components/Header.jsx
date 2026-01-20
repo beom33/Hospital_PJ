@@ -43,10 +43,15 @@ export default function Header() {
           </div>
           <div className="header-right">
             <div className="header-utils">
-              <ul>
+              <ul style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                 <li className="button">
                   <Link to="/login" className="p1 btnset btnset-primary btnset-sm">
                     로그인
+                  </Link>
+                </li>
+                <li className="button">
+                  <Link to="/register" className="p1 btnset btnset-primary btnset-sm">
+                    회원가입
                   </Link>
                 </li>
               </ul>
