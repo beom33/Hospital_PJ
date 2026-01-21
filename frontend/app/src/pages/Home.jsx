@@ -38,13 +38,13 @@ export default function Home() {
                   <SwiperSlide>
                     <div className="visual-image">
                       <picture>
-                        <source srcSet="/resources/images/img_N3_visual_01.png" media="(max-width: 992px)" />
-                        <img src="/resources/images/img_N3_visual_01.png" alt="비주얼 이미지1" />
+                        <source srcSet="/resources/images/medical3.jpg" media="(max-width: 992px)" />
+                        <img src="/resources/images/medical3.jpg" alt="비주얼 이미지1" />
                       </picture>
                     </div>
                     <div className="visual-body">
                       <div className="textset">
-                        <p className="h5 textset-text">MEDICAL CARE 2024</p>
+                        <p className="h5 textset-text">MEDICAL CARE 2026</p>
                         <h2 className="h1 textset-tit">건강한 내일을 위한<br />의료 서비스</h2>
                         <p className="h5 textset-desc">최첨단 의료 기술과 전문 의료진이 함께합니다.</p>
                       </div>
@@ -54,13 +54,13 @@ export default function Home() {
                   <SwiperSlide>
                     <div className="visual-image">
                       <picture>
-                        <source srcSet="/resources/images/img_N3_visual_01.png" media="(max-width: 992px)" />
-                        <img src="/resources/images/img_N3_visual_01.png" alt="비주얼 이미지2" />
+                        <source srcSet="/resources/images/medical1.jpg" media="(max-width: 992px)" />
+                        <img src="/resources/images/medical1.jpg" alt="비주얼 이미지2" />
                       </picture>
                     </div>
                     <div className="visual-body">
                       <div className="textset">
-                        <p className="h5 textset-text">HEALTH CHECK 2024</p>
+                        <p className="h5 textset-text">HEALTH CHECK 2026</p>
                         <h2 className="h1 textset-tit">체계적인 건강검진<br />프로그램</h2>
                         <p className="h5 textset-desc">정밀한 검진으로 건강을 미리 확인하세요.</p>
                       </div>
@@ -70,8 +70,8 @@ export default function Home() {
                   <SwiperSlide>
                     <div className="visual-image">
                       <picture>
-                        <source srcSet="/resources/images/img_N3_visual_01.png" media="(max-width: 992px)" />
-                        <img src="/resources/images/img_N3_visual_01.png" alt="비주얼 이미지3" />
+                        <source srcSet="/resources/images/medical2.jpg" media="(max-width: 992px)" />
+                        <img src="/resources/images/medical2.jpg" alt="비주얼 이미지3" />
                       </picture>
                     </div>
                     <div className="visual-body">
@@ -145,8 +145,8 @@ export default function Home() {
               <div className="contents-inner">
                 <div className="imageset">
                   <picture>
-                    <source srcSet="/resources/images/img_N5_bg_m.png" media="(max-width: 992px)" />
-                    <img className="imageset-img" src="/resources/images/img_N5_bg.png" alt="배너 이미지" />
+                    <source srcSet="/resources/images/medical4.jpg" media="(max-width: 992px)" />
+                    <img className="imageset-img" src="/resources/images/medical4.jpg" alt="배너 이미지" />
                   </picture>
                 </div>
                 <div className="textset">

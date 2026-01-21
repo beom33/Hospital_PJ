@@ -82,24 +82,34 @@ html, body {
 
 /* 헤더 투명 배경 및 줄 제거 */
 .th-layout-header,
-.th-layout-header *,
-.th-layout-header::before,
-.th-layout-header::after,
-.th-layout-header *::before,
-.th-layout-header *::after {
+.th-layout-header .temhamain1-N1,
+.th-layout-header .header-container {
   background: transparent !important;
   background-color: transparent !important;
   border: none !important;
+  box-shadow: none !important;
   border-top: none !important;
   border-bottom: none !important;
-  box-shadow: none !important;
-  outline: none !important;
+}
+
+/* 헤더 가상요소 줄 제거 */
+.th-layout-header::before,
+.th-layout-header::after,
+.th-layout-header .temhamain1-N1::before,
+.th-layout-header .temhamain1-N1::after,
+.th-layout-header .header-container::before,
+.th-layout-header .header-container::after {
+  display: none !important;
+  border: none !important;
+  background: transparent !important;
+  height: 0 !important;
+  width: 0 !important;
 }
 
 /* 헤더 글자색 흰색 유지 */
 .th-layout-header .header-gnblink,
 .th-layout-header .header-gnblink span {
-  color: #ffffff !important;
+  color: #0a0909 !important;
 }
 
 /* 헤더 메뉴 호버/선택 시 붉은색 */
@@ -110,3 +120,244 @@ html, body {
   color: #ff4444 !important;
 }
 
+/* 햄버거 메뉴 버튼 */
+.btn-momenu {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer;
+}
+
+.hamburger-line {
+  display: block;
+  width: 24px;
+  height: 3px;
+  background-color: #ffffff;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+.btn-momenu.active .hamburger-line:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.btn-momenu.active .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.btn-momenu.active .hamburger-line:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* 모바일 메뉴 숨기기 */
+.mobile-only {
+  display: none !important;
+}
+
+/* 데스크톱에서만 보이기 */
+.desktop-only {
+  display: flex;
+}
+
+/* 반응형 - 992px 이하 */
+@media (max-width: 992px) {
+  .th-layout-header .btn-momenu {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 5px !important;
+    width: 40px !important;
+    height: 40px !important;
+    padding: 8px !important;
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer !important;
+    position: relative !important;
+    z-index: 1001 !important;
+  }
+
+  .th-layout-header .hamburger-line {
+    display: block !important;
+    width: 24px !important;
+    height: 3px !important;
+    background-color: #ffffff !important;
+    border-radius: 2px !important;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  .th-layout-header .header-gnb {
+    position: fixed !important;
+    top: 0 !important;
+    right: -100% !important;
+    width: 280px !important;
+    height: 100vh !important;
+    background-color: #1a1a1a !important;
+    padding: 80px 20px 20px !important;
+    transition: right 0.3s ease !important;
+    z-index: 1000 !important;
+  }
+
+  .th-layout-header .header-gnb.open {
+    right: 0 !important;
+  }
+
+  .th-layout-header .header-gnblist {
+    flex-direction: column !important;
+    gap: 0 !important;
+  }
+
+  .th-layout-header .header-gnbitem {
+    border-bottom: 1px solid #333 !important;
+  }
+
+  .th-layout-header .header-gnblink {
+    display: block !important;
+    padding: 15px 10px !important;
+  }
+
+  .mobile-only {
+    display: block !important;
+  }
+
+  .btn-momenu.mobile-only {
+    display: flex !important;
+  }
+}
+
+/* 모바일 사이드 메뉴 */
+.mobile-menu-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mobile-menu-overlay.open {
+  display: block;
+  opacity: 1;
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  width: 320px;
+  max-width: 85%;
+  height: 100%;
+  background-color: #ffffff;
+  z-index: 1001;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+}
+
+.mobile-menu.open {
+  right: 0;
+}
+
+.mobile-menu-header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.mobile-menu-close {
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+}
+
+.mobile-menu-close:hover {
+  background-color: #f5f5f5;
+}
+
+.mobile-menu-login {
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.mobile-menu-login a {
+  color: #333;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.mobile-menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.mobile-menu-item {
+  border-bottom: 1px solid #eee;
+}
+
+.mobile-menu-item a {
+  display: block;
+  padding: 18px 20px;
+  color: #333;
+  font-size: 16px;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.mobile-menu-item a:hover {
+  background-color: #f5f5f5;
+  color: #ff4444;
+}
+
+/* 메인 비주얼 이미지 크기 조절 */
+.temhamain1-N3 .contents-container.fullscreen {
+  height: 75vh !important;  /* 화면 높이의 80% - 원하는 값으로 변경 가능 */
+  min-height: 500px !important;
+}
+
+.temhamain1-N3 .visual-image img {
+  object-position: center center !important;  /* 이미지 위치 조정 */
+}
+
+/* 메인 비주얼 텍스트 가독성 향상 */
+.temhamain1-N3 .textset-tit,
+.temhamain1-N3 .textset-text,
+.temhamain1-N3 .textset-desc {
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+.temhamain1-N3 .visual-body .btnset {
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+.temhamain1-N5 .textset-tit,
+.temhamain1-N5 .textset-text,
+.temhamain1-N5 .textset-desc {
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+.temhamain1-N5 .visual-body .btnset {
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5) !important;
+}
