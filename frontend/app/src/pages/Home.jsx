@@ -202,16 +202,16 @@ export default function Home() {
                     className="contents-slide"
                   >
                     <SwiperSlide>
-                      <img className="slide-img" src="/resources/images/img_N6_01.png" alt="이미지" />
+                      <img className="slide-img" src="/resources/images/medical5.jpg" alt="이미지" />
                     </SwiperSlide>
                     <SwiperSlide>
-                      <img className="slide-img" src="/resources/images/img_N6_02.png" alt="이미지" />
+                      <img className="slide-img" src="/resources/images/medical6.jpg" alt="이미지" />
                     </SwiperSlide>
                     <SwiperSlide>
-                      <img className="slide-img" src="/resources/images/img_N6_03.png" alt="이미지" />
+                      <img className="slide-img" src="/resources/images/medical7.jpg" alt="이미지" />
                     </SwiperSlide>
                     <SwiperSlide>
-                      <img className="slide-img" src="/resources/images/img_N6_01.png" alt="이미지" />
+                      <img className="slide-img" src="/resources/images/medical8.jpg" alt="이미지" />
                     </SwiperSlide>
                   </Swiper>
                 </div>

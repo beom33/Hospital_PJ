@@ -23,11 +23,6 @@ export default function Header() {
                 <ul className="header-gnblist">
                   <li className="header-gnbitem">
                     <Link className="p1 header-gnblink" to="/">
-                      <span>병원 소개</span>
-                    </Link>
-                  </li>
-                  <li className="header-gnbitem">
-                    <Link className="p1 header-gnblink" to="/">
                       <span>진료 안내</span>
                     </Link>
                   </li>
@@ -42,8 +37,13 @@ export default function Header() {
                     </Link>
                   </li>
                   <li className="header-gnbitem">
-                    <Link className="p1 header-gnblink" to="/">
+                    <Link className="p1 header-gnblink" to="/notice">
                       <span>공지사항</span>
+                    </Link>
+                  </li>
+                  <li className="header-gnbitem">
+                    <Link className="p1 header-gnblink" to="/insurance">
+                      <span>보험적용확인</span>
                     </Link>
                   </li>
                 </ul>
@@ -87,9 +87,6 @@ export default function Header() {
         </div>
         <ul className="mobile-menu-list">
           <li className="mobile-menu-item">
-            <Link to="/" onClick={() => setMenuOpen(false)}>병원 소개</Link>
-          </li>
-          <li className="mobile-menu-item">
             <Link to="/" onClick={() => setMenuOpen(false)}>진료 안내</Link>
           </li>
           <li className="mobile-menu-item">
@@ -99,7 +96,10 @@ export default function Header() {
             <Link to="/" onClick={() => setMenuOpen(false)}>예약하기</Link>
           </li>
           <li className="mobile-menu-item">
-            <Link to="/" onClick={() => setMenuOpen(false)}>공지사항</Link>
+            <Link to="/notice" onClick={() => setMenuOpen(false)}>공지사항</Link>
+          </li>
+          <li className="mobile-menu-item">
+            <Link to="/insurance" onClick={() => setMenuOpen(false)}>보험적용확인</Link>
           </li>
         </ul>
       </div>
