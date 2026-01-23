@@ -1,186 +1,456 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import SideMenu from "../components/SideMenu";
+
+const API_BASE_URL = "http://localhost:8080/api/medical-fees";
 
 export default function Insurance() {
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [hospitalSearch, setHospitalSearch] = useState("");
+  const [itemSearch, setItemSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedSubItems, setSelectedSubItems] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
+  const [hasSearched, setHasSearched] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  // 의료보험 적용 항목 데이터 (나중에 백엔드 연동)
-  const insuranceData = [
-    // 내과
-    { id: 1, category: "내과", name: "일반 진찰료", covered: true, selfPay: "30%", note: "기본 진료" },
-    { id: 2, category: "내과", name: "혈액검사 (일반)", covered: true, selfPay: "30%", note: "기본 혈액검사" },
-    { id: 3, category: "내과", name: "종합건강검진", covered: false, selfPay: "100%", note: "비급여 항목" },
-    { id: 4, category: "내과", name: "독감 예방접종", covered: false, selfPay: "100%", note: "비급여 (65세 이상 무료)" },
-
-    // 외과
-    { id: 5, category: "외과", name: "상처 봉합술", covered: true, selfPay: "30%", note: "응급 처치" },
-    { id: 6, category: "외과", name: "피부 양성종양 제거", covered: true, selfPay: "30%", note: "의학적 필요시" },
-    { id: 7, category: "외과", name: "지방흡입술", covered: false, selfPay: "100%", note: "미용 목적" },
-
-    // 정형외과
-    { id: 8, category: "정형외과", name: "X-ray 촬영", covered: true, selfPay: "30%", note: "진단 목적" },
-    { id: 9, category: "정형외과", name: "MRI 검사", covered: true, selfPay: "30~60%", note: "의사 소견 필요" },
-    { id: 10, category: "정형외과", name: "물리치료", covered: true, selfPay: "30%", note: "처방 필요" },
-    { id: 11, category: "정형외과", name: "도수치료", covered: false, selfPay: "100%", note: "비급여 항목" },
-
-    // 피부과
-    { id: 12, category: "피부과", name: "습진/피부염 치료", covered: true, selfPay: "30%", note: "질병 치료" },
-    { id: 13, category: "피부과", name: "여드름 치료", covered: false, selfPay: "100%", note: "미용 목적" },
-    { id: 14, category: "피부과", name: "레이저 시술", covered: false, selfPay: "100%", note: "미용 목적" },
-    { id: 15, category: "피부과", name: "점 제거", covered: false, selfPay: "100%", note: "미용 목적" },
-
-    // 치과
-    { id: 16, category: "치과", name: "충치 치료 (레진)", covered: true, selfPay: "30%", note: "12세 이하" },
-    { id: 17, category: "치과", name: "스케일링", covered: true, selfPay: "30%", note: "연 1회" },
-    { id: 18, category: "치과", name: "임플란트", covered: true, selfPay: "30%", note: "65세 이상, 2개까지" },
-    { id: 19, category: "치과", name: "치아 미백", covered: false, selfPay: "100%", note: "미용 목적" },
-    { id: 20, category: "치과", name: "치아 교정", covered: false, selfPay: "100%", note: "미용 목적" },
-
-    // 안과
-    { id: 21, category: "안과", name: "시력검사", covered: true, selfPay: "30%", note: "진단 목적" },
-    { id: 22, category: "안과", name: "백내장 수술", covered: true, selfPay: "30%", note: "질병 치료" },
-    { id: 23, category: "안과", name: "라식/라섹 수술", covered: false, selfPay: "100%", note: "시력 교정" },
-
-    // 산부인과
-    { id: 24, category: "산부인과", name: "임신 검진", covered: true, selfPay: "30%", note: "정기 검진" },
-    { id: 25, category: "산부인과", name: "분만비", covered: true, selfPay: "30%", note: "자연분만/제왕절개" },
-    { id: 26, category: "산부인과", name: "난임 시술 (체외수정)", covered: true, selfPay: "30~50%", note: "횟수 제한 있음" },
+  // 카테고리 데이터 (아이콘 + 이름)
+  const categories = [
+    { id: "hospital", name: "상급병실료", icon: "🏥" },
+    { id: "education", name: "교육상담료", icon: "📋" },
+    { id: "lab", name: "검체, 병리\n검사료", icon: "🔬" },
+    { id: "function", name: "기능검사료", icon: "📊" },
+    { id: "endoscopy", name: "내시경, 초자\n및 생검료", icon: "🩺" },
+    { id: "ultrasound", name: "초음파", icon: "📡" },
+    { id: "radiology", name: "영상진단 및\n방사선치료료", icon: "☢️" },
+    { id: "mri", name: "MRI", icon: "🧲" },
+    { id: "injection", name: "주사료", icon: "💉" },
+    { id: "physical", name: "물리치료", icon: "🏃" },
+    { id: "mental", name: "정신요법료", icon: "🧠" },
+    { id: "surgery", name: "처치 및 수술료", icon: "🔪" },
+    { id: "hair", name: "모발 이식술료", icon: "💇" },
+    { id: "eye", name: "시력 교정술료", icon: "👁️" },
+    { id: "dental", name: "치과", icon: "🦷" },
+    { id: "oriental", name: "한방", icon: "🌿" },
+    { id: "vaccine", name: "예방접종료", icon: "💊" },
+    { id: "material", name: "치료재료", icon: "🩹" },
+    { id: "assistant", name: "보장구", icon: "🦽" },
+    { id: "obesity", name: "제증명 수수료", icon: "📄" },
   ];
 
-  // 카테고리 목록
-  const categories = ["all", ...new Set(insuranceData.map(item => item.category))];
+  // 상세 분야 데이터
+  const subCategories = {
+    function: [
+      { id: "func1", name: "추가기능(인지 및 역치)검사" },
+      { id: "func2", name: "초기 산화질소 측정" },
+      { id: "func3", name: "교감신경피부반응검사" },
+      { id: "func4", name: "성기능장애평가" },
+      { id: "func5", name: "섭식장애평가" },
+      { id: "func6", name: "발음 및 발성검사" },
+      { id: "func7", name: "언어전반진단검사" },
+      { id: "func8", name: "주의력검사" },
+      { id: "func9", name: "영유아발달검사" },
+      { id: "func10", name: "덴버발달검사" },
+    ],
+    physical: [
+      { id: "phy1", name: "도수치료" },
+      { id: "phy2", name: "증식치료" },
+      { id: "phy3", name: "체외충격파" },
+      { id: "phy4", name: "근막이완술" },
+    ],
+    dental: [
+      { id: "den1", name: "치아미백" },
+      { id: "den2", name: "치아교정" },
+      { id: "den3", name: "임플란트" },
+      { id: "den4", name: "라미네이트" },
+      { id: "den5", name: "틀니" },
+    ],
+    eye: [
+      { id: "eye1", name: "라식수술" },
+      { id: "eye2", name: "라섹수술" },
+      { id: "eye3", name: "스마일라식" },
+      { id: "eye4", name: "렌즈삽입술" },
+    ],
+  };
 
-  // 필터링된 데이터
-  const filteredData = insuranceData.filter(item => {
-    const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
-    const matchesSearch = item.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-                         item.category.toLowerCase().includes(searchKeyword.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
 
-  // 카테고리별 그룹화
-  const groupedData = filteredData.reduce((acc, item) => {
-    if (!acc[item.category]) {
-      acc[item.category] = [];
+  // 카테고리 선택
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+    if (subCategories[category.id]) {
+      setShowModal(true);
     }
-    acc[item.category].push(item);
-    return acc;
-  }, {});
+  };
+
+  // 상세 분야 선택/해제
+  const toggleSubItem = (item) => {
+    setSelectedSubItems(prev =>
+      prev.includes(item.id)
+        ? prev.filter(id => id !== item.id)
+        : [...prev, item.id]
+    );
+  };
+
+  // 선택된 하위 항목의 이름들을 가져오는 함수
+  const getSelectedSubItemNames = () => {
+    if (!selectedCategory || !subCategories[selectedCategory.id]) {
+      return [];
+    }
+    return subCategories[selectedCategory.id]
+      .filter(item => selectedSubItems.includes(item.id))
+      .map(item => item.name);
+  };
+
+  // 검색 실행 (백엔드 API 호출)
+  const handleSearch = async () => {
+    setIsLoading(true);
+    setError(null);
+    setHasSearched(true);
+
+    try {
+      // 선택된 하위 항목이 있으면 그 항목들로 검색, 없으면 입력된 검색어나 카테고리로 검색
+      const selectedNames = getSelectedSubItemNames();
+      let searchItemName = itemSearch.trim() || null;
+
+      // 하위 항목이 선택되었으면 첫 번째 선택 항목으로 검색 (여러 개면 첫 번째)
+      if (selectedNames.length > 0) {
+        searchItemName = selectedNames[0];
+      }
+      // 카테고리만 선택한 경우 - 하위 항목이 없는 카테고리는 카테고리 이름으로 검색
+      // 하위 항목이 있는 카테고리인데 선택 안 한 경우는 검색어 없이 진행 (전체 목록)
+
+      console.log("검색 조건:", {
+        selectedCategory: selectedCategory?.name,
+        selectedSubItems,
+        selectedNames,
+        searchItemName,
+        hospitalSearch: hospitalSearch.trim()
+      });
+
+      const response = await fetch(`${API_BASE_URL}/search`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          hospitalName: hospitalSearch.trim() || null,
+          itemName: searchItemName,
+          category: selectedCategory?.name || null,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("검색 중 오류가 발생했습니다.");
+      }
+
+      const data = await response.json();
+      console.log("검색 결과:", data.length, "건");
+      setSearchResults(data);
+    } catch (err) {
+      setError(err.message);
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 병원명으로 빠른 검색
+  const handleHospitalQuickSearch = async (hospitalName) => {
+    setHospitalSearch(hospitalName);
+    setIsLoading(true);
+    setError(null);
+    setHasSearched(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/hospital?name=${encodeURIComponent(hospitalName)}`);
+      if (!response.ok) {
+        throw new Error("검색 중 오류가 발생했습니다.");
+      }
+      const data = await response.json();
+      setSearchResults(data);
+    } catch (err) {
+      setError(err.message);
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 항목명으로 빠른 검색
+  const handleItemQuickSearch = async (itemName) => {
+    setItemSearch(itemName);
+    setIsLoading(true);
+    setError(null);
+    setHasSearched(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/item?name=${encodeURIComponent(itemName)}`);
+      if (!response.ok) {
+        throw new Error("검색 중 오류가 발생했습니다.");
+      }
+      const data = await response.json();
+      setSearchResults(data);
+    } catch (err) {
+      setError(err.message);
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // 가격 포맷
+  const formatPrice = (price) => {
+    return price.toLocaleString() + "원";
+  };
 
   return (
     <>
       <Header />
       <div className="page-container">
-        <div className="page-header">
-          <h1 className="page-title">의료보험 적용 확인</h1>
-          <div className="breadcrumb">
-            <Link to="/">홈</Link> &gt; <span>의료보험 적용 확인</span>
+        <div className="page-header insurance-header">
+          <h1 className="page-title">비급여 진료비용 정보</h1>
+          <div className="page-tabs">
+            <button className="tab-btn active">비급여 진료비용 정보</button>
+            <button className="tab-btn">비급여 알아보기</button>
+            <button className="tab-btn">이용 가이드</button>
           </div>
         </div>
 
-        <div className="page-content">
-          <SideMenu />
+        <div className="insurance-content">
+          {/* 왼쪽 검색 패널 */}
+          <aside className="insurance-sidebar">
+            <div className="sidebar-header">
+              <h3>비급여 진료비용 상세 검색</h3>
+            </div>
 
-          <main className="main-content">
-            <div className="content-header">
-              <h2>의료보험 적용 항목 조회</h2>
+            {/* 병원 검색 */}
+            <div className="search-section">
+              <label className="search-label">
+                <span className="label-icon">🏥</span>
+                병·의원으로 조회하기
+              </label>
+              <div className="search-input-wrap">
+                <input
+                  type="text"
+                  placeholder="병·의원 이름 또는 도로명 주소 입력"
+                  value={hospitalSearch}
+                  onChange={(e) => setHospitalSearch(e.target.value)}
+                  className="search-input-full"
+                />
+                <button className="search-icon-btn">🔍</button>
+              </div>
+            </div>
+
+            {/* 항목으로 조회 */}
+            <div className="search-section">
+              <label className="search-label">
+                <span className="label-icon">📋</span>
+                항목으로 조회하기
+              </label>
+
+              {/* 비급여 진료비 항목 검색 */}
+              <div className="search-subsection">
+                <span className="subsection-label">비급여 진료비 항목 <span className="required">*</span></span>
+                <div className="search-input-wrap">
+                  <input
+                    type="text"
+                    placeholder="비급여진료비 항목명 또는 병명으로 검색 가능 예시)독감"
+                    value={itemSearch}
+                    onChange={(e) => setItemSearch(e.target.value)}
+                    className="search-input-full"
+                  />
+                  <button className="search-icon-btn">🔍</button>
+                </div>
+              </div>
+
+              {/* 카테고리 그리드 */}
+              <div className="category-grid">
+                {categories.map(cat => (
+                  <button
+                    key={cat.id}
+                    className={`category-btn ${selectedCategory?.id === cat.id ? 'active' : ''}`}
+                    onClick={() => handleCategoryClick(cat)}
+                  >
+                    <span className="category-icon">{cat.icon}</span>
+                    <span className="category-name">{cat.name}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 검색 버튼 */}
+            <button className="main-search-btn" onClick={handleSearch}>
+              선택항목 검색
+            </button>
+
+            {/* 다빈도항목 빠른 조회 */}
+            <div className="quick-search">
+              <h4>다빈도항목 빠른 조회</h4>
+              <div className="quick-tags">
+                <button className="quick-tag" onClick={() => handleItemQuickSearch("도수치료")}>도수치료</button>
+                <button className="quick-tag" onClick={() => handleItemQuickSearch("대상포진")}>대상포진</button>
+                <button className="quick-tag" onClick={() => handleItemQuickSearch("폐렴구균")}>폐렴구균</button>
+                <button className="quick-tag" onClick={() => handleItemQuickSearch("MRI")}>MRI</button>
+                <button className="quick-tag" onClick={() => handleItemQuickSearch("임플란트")}>임플란트</button>
+              </div>
+            </div>
+          </aside>
+
+          {/* 오른쪽 결과 패널 */}
+          <main className="insurance-main">
+            {/* 안내 배너 */}
+            <div className="info-banner">
+              <span className="banner-icon">📢</span>
+              <p>
+                현재 보건복지부 고시*에 따라 공개중인 '인플루엔자(독감) 예방접종' 항목은 4가 백신임을 알려드립니다.
+                <br />
+                * 「비급여 진료비용 등의 보고 및 공개에 관한 기준」 (보건복지부 고시 제2025-48호)
+              </p>
+            </div>
+
+            {/* 검색 결과 영역 */}
+            <div className="results-section">
+              <div className="results-header">
+                <span className="results-count">
+                  검색결과 총 <strong>{hasSearched ? searchResults.length : 0}</strong>건
+                </span>
+                <div className="results-actions">
+                  <button className="action-btn active">목록으로 보기</button>
+                  <button className="action-btn">지도로 보기</button>
+                </div>
+              </div>
+
+              {/* 결과 테이블 */}
+              {isLoading ? (
+                <div className="no-results-box">
+                  <span className="no-results-icon">⏳</span>
+                  <p>검색 중입니다...</p>
+                </div>
+              ) : error ? (
+                <div className="no-results-box">
+                  <span className="no-results-icon">⚠️</span>
+                  <p>{error}</p>
+                </div>
+              ) : hasSearched ? (
+                searchResults.length > 0 ? (
+                  <div className="results-table-wrap">
+                    <table className="results-table">
+                      <thead>
+                        <tr>
+                          <th>의료기관명</th>
+                          <th>의료기관규모</th>
+                          <th>소재지</th>
+                          <th>중분류</th>
+                          <th>항목명</th>
+                          <th>최소금액</th>
+                          <th>최대금액</th>
+                          <th>비고</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {searchResults.map(item => (
+                          <tr key={item.id}>
+                            <td>{item.hospitalName}</td>
+                            <td>{item.hospitalType}</td>
+                            <td>{item.hospitalAddress}</td>
+                            <td>{item.category}</td>
+                            <td>{item.itemName}</td>
+                            <td className="price">{formatPrice(item.minPrice)}</td>
+                            <td className="price">{formatPrice(item.maxPrice)}</td>
+                            <td>{item.note || "-"}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="no-results-box">
+                    <span className="no-results-icon">!</span>
+                    <p>검색 결과가 존재하지 않습니다.</p>
+                  </div>
+                )
+              ) : (
+                <div className="no-results-box">
+                  <span className="no-results-icon">🔍</span>
+                  <p>검색 조건을 입력하고 검색 버튼을 클릭해주세요.</p>
+                </div>
+              )}
+
+              {/* 페이지네이션 */}
+              {hasSearched && searchResults.length > 0 && (
+                <div className="pagination">
+                  <button className="page-btn">«</button>
+                  <button className="page-btn">‹</button>
+                  <button className="page-btn active">1</button>
+                  <button className="page-btn">2</button>
+                  <button className="page-btn">3</button>
+                  <button className="page-btn">4</button>
+                  <button className="page-btn">5</button>
+                  <button className="page-btn">›</button>
+                  <button className="page-btn">»</button>
+                </div>
+              )}
             </div>
 
             {/* 안내 문구 */}
-            <div className="insurance-notice">
-              <p><strong>안내:</strong> 아래 정보는 일반적인 의료보험 적용 기준입니다. 실제 적용 여부는 개인의 상황, 의사의 소견, 보험 종류에 따라 다를 수 있습니다. 정확한 정보는 병원 또는 국민건강보험공단에 문의해 주세요.</p>
-            </div>
-
-            {/* 검색 영역 */}
-            <div className="search-area">
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="search-select"
-              >
-                <option value="all">전체 진료과목</option>
-                {categories.filter(cat => cat !== "all").map(category => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
-              <input
-                type="text"
-                placeholder="진료 항목을 검색하세요 (예: MRI, 임플란트)"
-                value={searchKeyword}
-                onChange={(e) => setSearchKeyword(e.target.value)}
-                className="search-input"
-              />
-              <button className="search-btn" onClick={() => {}}>검색</button>
-            </div>
-
-            {/* 범례 */}
-            <div className="insurance-legend">
-              <span className="legend-item covered">
-                <span className="legend-badge covered">급여</span> 건강보험 적용
-              </span>
-              <span className="legend-item not-covered">
-                <span className="legend-badge not-covered">비급여</span> 건강보험 미적용 (전액 본인부담)
-              </span>
-            </div>
-
-            {/* 검색 결과 */}
-            <div className="list-info">
-              <span>검색 결과: <strong>{filteredData.length}</strong>건</span>
-            </div>
-
-            {/* 카테고리별 목록 */}
-            {Object.keys(groupedData).length > 0 ? (
-              Object.entries(groupedData).map(([category, items]) => (
-                <div key={category} className="insurance-category">
-                  <h3 className="category-title">{category}</h3>
-                  <table className="insurance-table">
-                    <thead>
-                      <tr>
-                        <th className="col-name">진료 항목</th>
-                        <th className="col-covered">보험 적용</th>
-                        <th className="col-selfpay">본인부담</th>
-                        <th className="col-note">비고</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {items.map(item => (
-                        <tr key={item.id} className={item.covered ? "row-covered" : "row-not-covered"}>
-                          <td className="col-name">{item.name}</td>
-                          <td className="col-covered">
-                            <span className={`badge ${item.covered ? "covered" : "not-covered"}`}>
-                              {item.covered ? "급여" : "비급여"}
-                            </span>
-                          </td>
-                          <td className="col-selfpay">{item.selfPay}</td>
-                          <td className="col-note">{item.note}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ))
-            ) : (
-              <div className="no-results">
-                <p>검색 결과가 없습니다.</p>
-              </div>
-            )}
-
-            {/* 추가 안내 */}
-            <div className="insurance-info-box">
-              <h4>의료보험 관련 문의</h4>
-              <ul>
-                <li><strong>국민건강보험공단:</strong> 1577-1000</li>
-                <li><strong>건강보험심사평가원:</strong> 1644-2000</li>
-                <li><strong>병원 원무과:</strong> 진료 전 보험 적용 여부 확인 가능</li>
-              </ul>
+            <div className="notice-box">
+              <p>
+                <span className="notice-dot red">●</span>
+                같은 비급여 항목이라도 인력, 시설, 장비 및 시술 난이도 등에 따라 의료기관마다 금액 차이가 있을 수 있으며 함께 제공되는 다른 진료나 치료재료에 따라
+                <span className="highlight"> 실제 총 진료비는 다를 수 있습니다.</span>
+                공개된 비급여 가격은 의료기관에서 자율적으로 정한 것으로 특이사항 기재내용(세부정보)를 함께 참고하시기 바랍니다.
+              </p>
+              <p>
+                <span className="notice-dot blue">●</span>
+                공개항목의 금액 등이 변경된 경우, 해당 의료기관의 변경사항 보고와 관련한 행정처리 기간에 따라
+                <span className="highlight"> 실시간으로 반영되지 않으므로</span>
+                조회 시점의 정보와 의료기관에서 실제 운영중인 금액 등의 정보 차이가 있을 수 있습니다.
+                <span className="highlight">조회내용의 정확한 정보는 해당 의료기관에 확인하여 주시기 바랍니다.</span>
+              </p>
             </div>
           </main>
         </div>
       </div>
+
+      {/* 상세분야 선택 모달 */}
+      {showModal && selectedCategory && subCategories[selectedCategory.id] && (
+        <div className="modal-overlay" onClick={() => setShowModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>상세분야 선택</h3>
+              <button className="modal-close" onClick={() => setShowModal(false)}>✕</button>
+            </div>
+            <div className="modal-body">
+              <div className="subcategory-section">
+                <h4>{selectedCategory.name}</h4>
+                <div className="subcategory-list">
+                  {subCategories[selectedCategory.id].map(item => (
+                    <label key={item.id} className="subcategory-item">
+                      <input
+                        type="checkbox"
+                        checked={selectedSubItems.includes(item.id)}
+                        onChange={() => toggleSubItem(item)}
+                      />
+                      <span>{item.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="modal-search-btn" onClick={() => {
+                // 모달을 닫기 전에 검색 실행 (상태가 유지된 상태에서)
+                handleSearch();
+                setShowModal(false);
+              }}>
+                선택항목 검색
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Footer />
     </>
   );

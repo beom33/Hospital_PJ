@@ -34,6 +34,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/login", "/api/health", "/h2-console/**").permitAll()
+                        .requestMatchers("/api/medical-fees/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .headers(headers -> headers
