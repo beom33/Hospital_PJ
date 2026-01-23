@@ -6,6 +6,9 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { FaRegCalendarCheck } from "react-icons/fa";
+import { FaMapMarkedAlt } from "react-icons/fa";
+import { MdConnectWithoutContact } from "react-icons/md";
 
 export default function Home() {
   return (
@@ -96,35 +99,38 @@ export default function Home() {
                 <h2 className="h2 contents-tit">전문 의료 서비스</h2>
                 <ul className="cardset-list">
                   <li className="cardset-item">
-                    <figure className="cardset-figure">
-                      <img src="/resources/icons/ico_N4_01.svg" alt="진료 예약" />
-                    </figure>
-                    <div className="cardset-body">
-                      <strong className="h4 cardset-tit">진료 예약</strong>
-                      <p className="p1 cardset-desc">
-                        간편하게 온라인으로
-                        <br />
-                        진료 예약을 할 수 있습니다.
-                      </p>
-                    </div>
+                   <figure className="cardset-figure">
+              <FaRegCalendarCheck className="cardset-icon" />
+       </figure>
+          <div className="cardset-body">
+           <strong className="h4 cardset-tit">진료 예약</strong>
+           <p className="p1 cardset-desc">
+              간편하게 온라인으로
+               <br />
+             진료 예약을 할 수 있습니다.
+               </p>
+                  </div>
+
+                    
                   </li>
                   <li className="cardset-item">
                     <figure className="cardset-figure">
-                      <img src="/resources/icons/ico_N4_02.svg" alt="건강검진" />
+                      <FaMapMarkedAlt className="cardset-icon" /> 
                     </figure>
                     <div className="cardset-body">
-                      <strong className="h4 cardset-tit">건강검진</strong>
+                      <strong className="h4 cardset-tit">위치서비스</strong>
                       <p className="p1 cardset-desc">
-                        체계적인 건강검진으로
+                        찾고자 하는 병원의 위치 
                         <br />
-                        건강을 관리하세요.
+                        제대로 찾아드립니다
                       </p>
                     </div>
                   </li>
+
                   <li className="cardset-item">
-                    <figure className="cardset-figure">
-                      <img src="/resources/icons/ico_N4_03.svg" alt="전문 상담" />
-                    </figure>
+                   <figure className="cardset-figure">
+                    <MdConnectWithoutContact className="cardset-icon"/>
+                  </figure>
                     <div className="cardset-body">
                       <strong className="h4 cardset-tit">전문 상담</strong>
                       <p className="p1 cardset-desc">
@@ -202,7 +208,7 @@ export default function Home() {
                     className="contents-slide"
                   >
                     <SwiperSlide>
-                      <img className="slide-img" src="/resources/images/medical5.jpg" alt="이미지" />
+                      <img className="slide-img-tall" src="/resources/images/medical5.jpeg" alt="이미지" />
                     </SwiperSlide>
                     <SwiperSlide>
                       <img className="slide-img" src="/resources/images/medical6.jpg" alt="이미지" />

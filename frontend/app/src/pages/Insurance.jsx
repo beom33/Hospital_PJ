@@ -15,28 +15,28 @@ export default function Insurance() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // 카테고리 데이터 (아이콘 + 이름)
+  // 카테고리 데이터 (아이콘 + 이름 + 검색키워드)
   const categories = [
-    { id: "hospital", name: "상급병실료", icon: "🏥" },
-    { id: "education", name: "교육상담료", icon: "📋" },
-    { id: "lab", name: "검체, 병리\n검사료", icon: "🔬" },
-    { id: "function", name: "기능검사료", icon: "📊" },
-    { id: "endoscopy", name: "내시경, 초자\n및 생검료", icon: "🩺" },
-    { id: "ultrasound", name: "초음파", icon: "📡" },
-    { id: "radiology", name: "영상진단 및\n방사선치료료", icon: "☢️" },
-    { id: "mri", name: "MRI", icon: "🧲" },
-    { id: "injection", name: "주사료", icon: "💉" },
-    { id: "physical", name: "물리치료", icon: "🏃" },
-    { id: "mental", name: "정신요법료", icon: "🧠" },
-    { id: "surgery", name: "처치 및 수술료", icon: "🔪" },
-    { id: "hair", name: "모발 이식술료", icon: "💇" },
-    { id: "eye", name: "시력 교정술료", icon: "👁️" },
-    { id: "dental", name: "치과", icon: "🦷" },
-    { id: "oriental", name: "한방", icon: "🌿" },
-    { id: "vaccine", name: "예방접종료", icon: "💊" },
-    { id: "material", name: "치료재료", icon: "🩹" },
-    { id: "assistant", name: "보장구", icon: "🦽" },
-    { id: "obesity", name: "제증명 수수료", icon: "📄" },
+    { id: "hospital", name: "상급병실료", icon: "🏥", searchTerm: "상급병실" },
+    { id: "education", name: "교육상담료", icon: "📋", searchTerm: "교육상담" },
+    { id: "lab", name: "검체, 병리\n검사료", icon: "🔬", searchTerm: "검체검사" },
+    { id: "function", name: "기능검사료", icon: "📊", searchTerm: "기능검사" },
+    { id: "endoscopy", name: "내시경, 초자\n및 생검료", icon: "🩺", searchTerm: "내시경" },
+    { id: "ultrasound", name: "초음파", icon: "📡", searchTerm: "초음파" },
+    { id: "radiology", name: "영상진단 및\n방사선치료료", icon: "☢️", searchTerm: "영상진단" },
+    { id: "mri", name: "MRI", icon: "🧲", searchTerm: "MRI" },
+    { id: "injection", name: "주사료", icon: "💉", searchTerm: "주사" },
+    { id: "physical", name: "물리치료", icon: "🏃", searchTerm: "도수치료" },
+    { id: "mental", name: "정신요법료", icon: "🧠", searchTerm: "정신요법" },
+    { id: "surgery", name: "처치 및 수술료", icon: "🔪", searchTerm: "수술" },
+    { id: "hair", name: "모발 이식술료", icon: "💇", searchTerm: "모발이식" },
+    { id: "eye", name: "시력 교정술료", icon: "👁️", searchTerm: "라식" },
+    { id: "dental", name: "치과", icon: "🦷", searchTerm: "치과" },
+    { id: "oriental", name: "한방", icon: "🌿", searchTerm: "한방" },
+    { id: "vaccine", name: "예방접종료", icon: "💊", searchTerm: "예방접종" },
+    { id: "material", name: "치료재료", icon: "🩹", searchTerm: "치료재료" },
+    { id: "assistant", name: "보장구", icon: "🦽", searchTerm: "보장구" },
+    { id: "obesity", name: "제증명 수수료", icon: "📄", searchTerm: "제증명" },
   ];
 
   // 상세 분야 데이터
@@ -76,10 +76,38 @@ export default function Insurance() {
 
 
   // 카테고리 선택
-  const handleCategoryClick = (category) => {
+  const handleCategoryClick = async (category) => {
     setSelectedCategory(category);
+    setSelectedSubItems([]); // 기존 선택 초기화
+
     if (subCategories[category.id]) {
+      // 하위 항목이 있는 카테고리면 모달 열기
       setShowModal(true);
+    } else {
+      // 하위 항목이 없는 카테고리면 바로 검색 실행
+      await handleCategorySearch(category.searchTerm || category.name);
+    }
+  };
+
+  // 카테고리명으로 바로 검색
+  const handleCategorySearch = async (categoryName) => {
+    setIsLoading(true);
+    setError(null);
+    setHasSearched(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/item?name=${encodeURIComponent(categoryName)}`);
+      if (!response.ok) {
+        throw new Error("검색 중 오류가 발생했습니다.");
+      }
+      const data = await response.json();
+      console.log(`${categoryName} 검색 결과:`, data.length, "건");
+      setSearchResults(data);
+    } catch (err) {
+      setError(err.message);
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 

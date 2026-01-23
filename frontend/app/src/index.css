@@ -166,8 +166,8 @@ html, body {
   display: flex;
 }
 
-/* 반응형 - 1600px 이하 */
-@media (max-width: 1600px) {
+/* 반응형 - 992px 이하 (태블릿/모바일) */
+@media (max-width: 992px) {
   .th-layout-header .btn-momenu {
     display: flex !important;
     flex-direction: column !important;
@@ -1760,3 +1760,18 @@ html, body {
     font-size: 10px;
   }
 }
+
+/*바탕화면 서비스 아이콘 크기 조절 */
+.cardset-icon {
+  font-size: 85px;     /* 크기 */
+  color: #2e323a;     /* 색상 (원하는 색으로) */
+  margin-left: 15px;
+}
+
+
+/*medical5 이미지 높이조절 */
+.slide-img-tall {
+  width: 100%;
+  height: 160px;
+}
+
