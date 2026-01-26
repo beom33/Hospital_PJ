@@ -84,6 +84,7 @@ public class HiraApiService {
      */
     public List<MedicalFeeResponse> searchByHospitalName(String hospitalName) {
         try {
+            // 1차: 병원명 파라미터로 직접 검색
             String url = BASE_URL + "/getNonPaymentItemHospDtlList"
                     + "?serviceKey=" + apiKey
                     + "&yadmNm=" + URLEncoder.encode(hospitalName, StandardCharsets.UTF_8.toString())
@@ -92,14 +93,49 @@ public class HiraApiService {
                     + "&_type=json";
 
             log.info("HIRA API 호출 (병원명): {}", hospitalName);
-            log.debug("API URL: {}", url.replace(apiKey, "***"));
             String response = restTemplate.getForObject(url, String.class);
-            log.debug("API 응답: {}", response != null ? response.substring(0, Math.min(500, response.length())) : "null");
             List<MedicalFeeResponse> results = parseJsonResponse(response);
 
             if (!results.isEmpty()) {
+                log.info("API 직접 검색 결과: {}건", results.size());
                 return results;
             }
+
+            // 2차: 직접 검색 결과가 없으면, 전체 데이터에서 병원명 필터링
+            log.info("직접 검색 결과 없음, 전체 데이터에서 필터링 시도: {}", hospitalName);
+            List<MedicalFeeResponse> allResults = new ArrayList<>();
+
+            // 여러 페이지에서 데이터 수집 후 필터링
+            for (int page = 1; page <= 5; page++) {
+                String broadUrl = BASE_URL + "/getNonPaymentItemHospDtlList"
+                        + "?serviceKey=" + apiKey
+                        + "&pageNo=" + page
+                        + "&numOfRows=1000"
+                        + "&_type=json";
+
+                String broadResponse = restTemplate.getForObject(broadUrl, String.class);
+                List<MedicalFeeResponse> pageResults = parseJsonResponse(broadResponse);
+
+                if (pageResults.isEmpty()) break;
+
+                // 병원명 필터링
+                final String searchTerm = hospitalName.toLowerCase();
+                List<MedicalFeeResponse> filtered = pageResults.stream()
+                        .filter(r -> r.getHospitalName() != null &&
+                                     r.getHospitalName().toLowerCase().contains(searchTerm))
+                        .toList();
+
+                allResults.addAll(filtered);
+
+                // 충분한 결과가 있으면 중단
+                if (allResults.size() >= 100) break;
+            }
+
+            if (!allResults.isEmpty()) {
+                log.info("필터링 검색 결과: {}건", allResults.size());
+                return allResults;
+            }
+
         } catch (HttpClientErrorException e) {
             log.warn("HIRA API 인증 실패 ({}), 로컬 데이터베이스 사용", e.getStatusCode());
         } catch (Exception e) {

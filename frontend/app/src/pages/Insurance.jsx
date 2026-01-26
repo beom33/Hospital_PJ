@@ -14,29 +14,31 @@ export default function Insurance() {
   const [hasSearched, setHasSearched] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-  // 카테고리 데이터 (아이콘 + 이름 + 검색키워드)
+  // 카테고리 데이터 (이미지 + 이름 + 검색키워드)
   const categories = [
-    { id: "hospital", name: "상급병실료", icon: "🏥", searchTerm: "상급병실" },
-    { id: "education", name: "교육상담료", icon: "📋", searchTerm: "교육상담" },
-    { id: "lab", name: "검체, 병리\n검사료", icon: "🔬", searchTerm: "검체검사" },
-    { id: "function", name: "기능검사료", icon: "📊", searchTerm: "기능검사" },
-    { id: "endoscopy", name: "내시경, 초자\n및 생검료", icon: "🩺", searchTerm: "내시경" },
-    { id: "ultrasound", name: "초음파", icon: "📡", searchTerm: "초음파" },
-    { id: "radiology", name: "영상진단 및\n방사선치료료", icon: "☢️", searchTerm: "영상진단" },
-    { id: "mri", name: "MRI", icon: "🧲", searchTerm: "MRI" },
-    { id: "injection", name: "주사료", icon: "💉", searchTerm: "주사" },
-    { id: "physical", name: "물리치료", icon: "🏃", searchTerm: "도수치료" },
-    { id: "mental", name: "정신요법료", icon: "🧠", searchTerm: "정신요법" },
-    { id: "surgery", name: "처치 및 수술료", icon: "🔪", searchTerm: "수술" },
-    { id: "hair", name: "모발 이식술료", icon: "💇", searchTerm: "모발이식" },
-    { id: "eye", name: "시력 교정술료", icon: "👁️", searchTerm: "라식" },
-    { id: "dental", name: "치과", icon: "🦷", searchTerm: "치과" },
-    { id: "oriental", name: "한방", icon: "🌿", searchTerm: "한방" },
-    { id: "vaccine", name: "예방접종료", icon: "💊", searchTerm: "예방접종" },
-    { id: "material", name: "치료재료", icon: "🩹", searchTerm: "치료재료" },
-    { id: "assistant", name: "보장구", icon: "🦽", searchTerm: "보장구" },
-    { id: "obesity", name: "제증명 수수료", icon: "📄", searchTerm: "제증명" },
+    { id: "hospital", name: "상급병실료", image: "/resources/icons2/hospital.png", searchTerm: "상급병실" },
+    { id: "education", name: "교육상담료", image: "/resources/icons2/교육상담.png", searchTerm: "교육상담" },
+    { id: "lab", name: "검체, 병리\n검사료", image: "/resources/icons2/검체병리.png", searchTerm: "검체검사" },
+    { id: "function", name: "기능검사료", image: "/resources/icons2/기능검사.png", searchTerm: "기능검사" },
+    { id: "endoscopy", name: "내시경, 천자\n및 생검료", image: "/resources/icons2/내시경.png", searchTerm: "내시경" },
+    { id: "ultrasound", name: "초음파", image: "/resources/icons2/초음파.png", searchTerm: "초음파" },
+    { id: "radiology", name: "영상진단 및\n방사선치료료", image: "/resources/icons2/영상진단.png", searchTerm: "영상진단" },
+    { id: "mri", name: "MRI", image: "/resources/icons2/MRI.png", searchTerm: "MRI" },
+    { id: "injection", name: "주사료", image: "/resources/icons2/주사료.png", searchTerm: "주사" },
+    { id: "physical", name: "물리치료", image: "/resources/icons2/물리치료.png", searchTerm: "도수치료" },
+    { id: "mental", name: "정신요법료", image: "/resources/icons2/정신요법.png", searchTerm: "정신요법" },
+    { id: "surgery", name: "처치 및 수술료", image: "/resources/icons2/처치및수술.png", searchTerm: "수술" },
+    { id: "hair", name: "모발 이식술료", image: "/resources/icons2/모발이식.png", searchTerm: "모발이식" },
+    { id: "eye", name: "시력 교정술료", image: "/resources/icons2/시력교정술.png", searchTerm: "라식" },
+    { id: "dental", name: "치과", image: "/resources/icons2/치과.png", searchTerm: "치과" },
+    { id: "oriental", name: "한방", image: "/resources/icons2/한방.png", searchTerm: "한방" },
+    { id: "vaccine", name: "예방접종료", image: "/resources/icons2/예방접종.png", searchTerm: "예방접종" },
+    { id: "material", name: "치료재료", image: "/resources/icons2/치료재료.png", searchTerm: "치료재료" },
+    { id: "assistant", name: "보장구", image: "/resources/icons2/보장구.png", searchTerm: "보장구" },
+    { id: "certificate", name: "제증명 수수료", image: "/resources/icons2/제증명.png", searchTerm: "제증명" },
   ];
 
   // 상세 분야 데이터
@@ -94,6 +96,7 @@ export default function Insurance() {
     setIsLoading(true);
     setError(null);
     setHasSearched(true);
+    setCurrentPage(1);
 
     try {
       const response = await fetch(`${API_BASE_URL}/item?name=${encodeURIComponent(categoryName)}`);
@@ -135,6 +138,7 @@ export default function Insurance() {
     setIsLoading(true);
     setError(null);
     setHasSearched(true);
+    setCurrentPage(1);
 
     try {
       // 선택된 하위 항목이 있으면 그 항목들로 검색, 없으면 입력된 검색어나 카테고리로 검색
@@ -189,6 +193,7 @@ export default function Insurance() {
     setIsLoading(true);
     setError(null);
     setHasSearched(true);
+    setCurrentPage(1);
 
     try {
       const response = await fetch(`${API_BASE_URL}/hospital?name=${encodeURIComponent(hospitalName)}`);
@@ -211,6 +216,7 @@ export default function Insurance() {
     setIsLoading(true);
     setError(null);
     setHasSearched(true);
+    setCurrentPage(1);
 
     try {
       const response = await fetch(`${API_BASE_URL}/item?name=${encodeURIComponent(itemName)}`);
@@ -232,16 +238,42 @@ export default function Insurance() {
     return price.toLocaleString() + "원";
   };
 
+  // 페이지네이션 관련 계산
+  const totalPages = Math.ceil(searchResults.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentItems = searchResults.slice(startIndex, endIndex);
+
+  // 페이지 변경
+  const handlePageChange = (page) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  // 페이지 번호 배열 생성 (현재 페이지 기준 최대 5개)
+  const getPageNumbers = () => {
+    const pages = [];
+    let startPage = Math.max(1, currentPage - 2);
+    let endPage = Math.min(totalPages, startPage + 4);
+
+    if (endPage - startPage < 4) {
+      startPage = Math.max(1, endPage - 4);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+    return pages;
+  };
+
   return (
     <>
-      <Header />
+      <Header simplified />
       <div className="page-container">
         <div className="page-header insurance-header">
-          <h1 className="page-title">비급여 진료비용 정보</h1>
           <div className="page-tabs">
             <button className="tab-btn active">비급여 진료비용 정보</button>
-            <button className="tab-btn">비급여 알아보기</button>
-            <button className="tab-btn">이용 가이드</button>
           </div>
         </div>
 
@@ -264,9 +296,19 @@ export default function Insurance() {
                   placeholder="병·의원 이름 또는 도로명 주소 입력"
                   value={hospitalSearch}
                   onChange={(e) => setHospitalSearch(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && hospitalSearch.trim()) {
+                      handleHospitalQuickSearch(hospitalSearch.trim());
+                    }
+                  }}
                   className="search-input-full"
                 />
-                <button className="search-icon-btn">🔍</button>
+                <button
+                  className="search-icon-btn"
+                  onClick={() => hospitalSearch.trim() && handleHospitalQuickSearch(hospitalSearch.trim())}
+                >
+                  🔍
+                </button>
               </div>
             </div>
 
@@ -286,9 +328,19 @@ export default function Insurance() {
                     placeholder="비급여진료비 항목명 또는 병명으로 검색 가능 예시)독감"
                     value={itemSearch}
                     onChange={(e) => setItemSearch(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && itemSearch.trim()) {
+                        handleItemQuickSearch(itemSearch.trim());
+                      }
+                    }}
                     className="search-input-full"
                   />
-                  <button className="search-icon-btn">🔍</button>
+                  <button
+                    className="search-icon-btn"
+                    onClick={() => itemSearch.trim() && handleItemQuickSearch(itemSearch.trim())}
+                  >
+                    🔍
+                  </button>
                 </div>
               </div>
 
@@ -300,7 +352,7 @@ export default function Insurance() {
                     className={`category-btn ${selectedCategory?.id === cat.id ? 'active' : ''}`}
                     onClick={() => handleCategoryClick(cat)}
                   >
-                    <span className="category-icon">{cat.icon}</span>
+                    <img src={cat.image} alt={cat.name} className="category-icon" />
                     <span className="category-name">{cat.name}</span>
                   </button>
                 ))}
@@ -377,8 +429,8 @@ export default function Insurance() {
                         </tr>
                       </thead>
                       <tbody>
-                        {searchResults.map(item => (
-                          <tr key={item.id}>
+                        {currentItems.map((item, index) => (
+                          <tr key={item.id || index}>
                             <td>{item.hospitalName}</td>
                             <td>{item.hospitalType}</td>
                             <td>{item.hospitalAddress}</td>
@@ -406,17 +458,45 @@ export default function Insurance() {
               )}
 
               {/* 페이지네이션 */}
-              {hasSearched && searchResults.length > 0 && (
+              {hasSearched && searchResults.length > 0 && totalPages > 1 && (
                 <div className="pagination">
-                  <button className="page-btn">«</button>
-                  <button className="page-btn">‹</button>
-                  <button className="page-btn active">1</button>
-                  <button className="page-btn">2</button>
-                  <button className="page-btn">3</button>
-                  <button className="page-btn">4</button>
-                  <button className="page-btn">5</button>
-                  <button className="page-btn">›</button>
-                  <button className="page-btn">»</button>
+                  <button
+                    className="page-btn"
+                    onClick={() => handlePageChange(1)}
+                    disabled={currentPage === 1}
+                  >
+                    «
+                  </button>
+                  <button
+                    className="page-btn"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    ‹
+                  </button>
+                  {getPageNumbers().map(page => (
+                    <button
+                      key={page}
+                      className={`page-btn ${currentPage === page ? 'active' : ''}`}
+                      onClick={() => handlePageChange(page)}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                  <button
+                    className="page-btn"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    ›
+                  </button>
+                  <button
+                    className="page-btn"
+                    onClick={() => handlePageChange(totalPages)}
+                    disabled={currentPage === totalPages}
+                  >
+                    »
+                  </button>
                 </div>
               )}
             </div>

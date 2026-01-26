@@ -1,13 +1,40 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function Header() {
+export default function Header({ simplified = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
 
+  // 비급여 페이지용 간소화된 헤더
+  if (simplified) {
+    return (
+      <header className="th-layout-header">
+        <div className="temhamain1-N1" id="XYmk1ALhP3">
+          <div className="header-container container-full">
+            <div className="header-left">
+              <h1 className="header-title">
+                <Link to="/">
+                  <img src="/resources/images/medi_logo.png" alt="Medi-best" style={{ height: "80px", width: "auto" }} />
+                </Link>
+              </h1>
+              <nav className="header-gnb">
+                <ul className="header-gnblist">
+                  <li className="header-gnbitem">
+                
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </header>
+    );
+  }
+
+  // 일반 헤더
   return (
     <>
       <header className="th-layout-header">
