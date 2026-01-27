@@ -272,9 +272,17 @@ export default function Insurance() {
       <Header simplified />
       <div className="page-container">
         <div className="page-header insurance-header">
-          <div className="page-tabs">
-            <button className="tab-btn active">비급여 진료비용 정보</button>
-          </div>
+          <div className="insurance-header-inner">
+    {/* 왼쪽: 로고 + 타이틀 */}
+    <div className="insurance-brand">
+      <h1 className="insurance-title">비급여 진료비용 정보</h1>
+    </div>
+ <a className="hospital-find-banner" href="/hospital">
+      <span className="banner-badge">병원찾기</span>
+      <span className="banner-arrow">›</span>
+    </a>
+  </div>
+        
         </div>
 
         <div className="insurance-content">

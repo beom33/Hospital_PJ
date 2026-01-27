@@ -364,11 +364,12 @@ html, body {
 
 /* ========== 공지사항 페이지 스타일 ========== */
 
-/* 페이지 컨테이너 */
+/* 비급여진료조회 페이지  */
 .page-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 20px;
+   max-width: none ;   
+  width: 100%;
+  margin: 0 ;         
+  padding: 0 ;
 }
 
 .page-header {
@@ -1155,8 +1156,15 @@ html, body {
 /* ========== 비급여 진료비 검색 페이지 (건강보험심사평가원 스타일) ========== */
 
 .insurance-header {
-  background: linear-gradient(135deg, #1a5fb4 0%, #3584e4 100%) !important;
-  margin-bottom: 0 !important;
+   position: relative;
+  padding: 26px 0 12px;
+  margin: 0 !important;
+  text-align: center; 
+  color: #fff;
+  /* 로고쪽 밝게 + 그라데이션 */
+  background:
+    radial-gradient(900px 260px at 140px 55%, rgba(255,255,255,0.28), rgba(255,255,255,0) 60%),
+    linear-gradient(90deg, #3f5878 0%, #2f4a6b 35%, #223a57 70%, #1b2f48 100%) !important;
 }
 
 .page-tabs {
