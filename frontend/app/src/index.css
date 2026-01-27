@@ -1157,8 +1157,10 @@ html, body {
 
 .insurance-header {
    position: relative;
-  padding: 26px 0 12px;
+  padding: 20px 0 25px;
+   padding-top: 30px;
   margin: 0 !important;
+  font-size: 12px; 
   text-align: center; 
   color: #fff;
   /* 로고쪽 밝게 + 그라데이션 */
