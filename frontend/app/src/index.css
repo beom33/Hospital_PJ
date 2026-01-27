@@ -198,10 +198,10 @@ html, body {
 
   .th-layout-header .header-gnb {
     position: fixed !important;
-    top: 0 !important;
+    /*top: 0 !important;*/
     right: -100% !important;
     width: 280px !important;
-    height: 100vh !important;
+   /*height: 100vh !important;*/
     background-color: #1a1a1a !important;
     padding: 80px 20px 20px !important;
     transition: right 0.3s ease !important;
@@ -1203,6 +1203,8 @@ html, body {
   color: white;
   padding: 0;
   flex-shrink: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .sidebar-header {
@@ -1217,8 +1219,9 @@ html, body {
 }
 
 .search-section {
-  padding: 20px;
+  padding: 15px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
 }
 
 .search-label {
@@ -1233,6 +1236,12 @@ html, body {
 
 .label-icon {
   font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
 }
 
 .search-input-wrap {
@@ -1285,24 +1294,27 @@ html, body {
 /* 카테고리 그리드 */
 .category-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+  gap: 6px;
   margin-top: 15px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .category-btn {
   display: flex;
-
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px 5px;
+  padding: 8px 3px;
   background: lightgray;
   border: 2px solid transparent;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
-  min-height: 80px;
+  min-height: 75px;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .category-btn:hover {
@@ -1703,7 +1715,7 @@ html, body {
 /* 반응형 - 비급여 검색 페이지 */
 @media (max-width: 1200px) {
   .category-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
   }
 }
 
@@ -1714,10 +1726,12 @@ html, body {
 
   .insurance-sidebar {
     width: 100%;
+    max-width: 100%;
   }
 
-  .category-grid {
-    grid-template-columns: repeat(5, 1fr);
+  .search-section {
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .results-table {
@@ -1731,10 +1745,6 @@ html, body {
 }
 
 @media (max-width: 768px) {
-  .category-grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
   .page-tabs {
     flex-wrap: wrap;
     justify-content: center;
@@ -1747,10 +1757,6 @@ html, body {
 }
 
 @media (max-width: 480px) {
-  .category-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
   .category-btn {
     min-height: 60px;
     padding: 8px 3px;

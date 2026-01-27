@@ -325,7 +325,7 @@ export default function Insurance() {
                 <div className="search-input-wrap">
                   <input
                     type="text"
-                    placeholder="비급여진료비 항목명 또는 병명으로 검색 가능 예시)독감"
+                    placeholder="비급여진료비 항목명 또는 병명으로 검색 가능"
                     value={itemSearch}
                     onChange={(e) => setItemSearch(e.target.value)}
                     onKeyDown={(e) => {
