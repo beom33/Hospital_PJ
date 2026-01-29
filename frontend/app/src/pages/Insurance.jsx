@@ -277,10 +277,6 @@ export default function Insurance() {
     <div className="insurance-brand">
       <h1 className="insurance-title">비급여 진료비용 정보</h1>
     </div>
- <a className="hospital-find-banner" href="/hospital">
-      <span className="banner-badge">병원찾기</span>
-      <span className="banner-arrow">›</span>
-    </a>
   </div>
         
         </div>
@@ -404,8 +400,9 @@ export default function Insurance() {
                   검색결과 총 <strong>{hasSearched ? searchResults.length : 0}</strong>건
                 </span>
                 <div className="results-actions">
-                  <button className="action-btn active">목록으로 보기</button>
-                  <button className="action-btn">지도로 보기</button>
+                  <a className="hospital-find-banner" href="/hospital">
+                  <button className="action-btn">병원 찾기</button>
+                  </a>
                 </div>
               </div>
 
