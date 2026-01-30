@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Header from "../components/Header";
+import { Link } from "react-router-dom";
 import Footer from "../components/Footer";
 
 const API_BASE_URL = "http://localhost:8080/api/medical-fees";
@@ -269,12 +269,13 @@ export default function Insurance() {
 
   return (
     <>
-      <Header simplified />
       <div className="page-container">
         <div className="page-header insurance-header">
           <div className="insurance-header-inner">
-    {/* 왼쪽: 로고 + 타이틀 */}
     <div className="insurance-brand">
+      <Link to="/">
+        <img src="/resources/images/medi_logo.png" alt="Medi-best" className="insurance-logo" />
+      </Link>
       <h1 className="insurance-title">비급여 진료비용 정보</h1>
     </div>
   </div>
@@ -430,7 +431,7 @@ export default function Insurance() {
                           <th>항목명</th>
                           <th>최소금액</th>
                           <th>최대금액</th>
-                          <th>비고</th>
+                          <th>비고</th>        6                                   /+6 
                         </tr>
                       </thead>
                       <tbody>

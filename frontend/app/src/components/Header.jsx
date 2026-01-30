@@ -11,7 +11,7 @@ export default function Header({ simplified = false }) {
   // 비급여 페이지용 간소화된 헤더
   if (simplified) {
     return (
-      <header className="th-layout-header">
+      <header className="th-layout-header header-simplified">
         <div className="temhamain1-N1" id="XYmk1ALhP3">
           <div className="header-container container-full">
             <div className="header-left">
@@ -20,13 +20,6 @@ export default function Header({ simplified = false }) {
                   <img src="/resources/images/medi_logo.png" alt="Medi-best" style={{ height: "80px", width: "auto" }} />
                 </Link>
               </h1>
-              <nav className="header-gnb">
-                <ul className="header-gnblist">
-                  <li className="header-gnbitem">
-                
-                  </li>
-                </ul>
-              </nav>
             </div>
           </div>
         </div>

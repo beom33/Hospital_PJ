@@ -81,6 +81,14 @@ html, body {
 }
 
 
+
+
+/* 비급여 페이지: 헤더 fixed 해제 (로고 따라오지 않게) */
+.header-simplified .temhamain1-N1 {
+  position: relative !important;
+  z-index: auto !important;
+}
+
 /* 헤더 투명 배경 및 줄 제거 */
 .th-layout-header,
 .th-layout-header .temhamain1-N1,
@@ -1160,17 +1168,38 @@ html, body {
 /* ========== 비급여 진료비 검색 페이지 (건강보험심사평가원 스타일) ========== */
 
 .insurance-header {
-   position: relative;
-  padding: 20px 0 25px;
-   padding-top: 30px;
+  padding: 20px 30px;
   margin: 0 !important;
-  font-size: 12px; 
-  text-align: center; 
+  font-size: 12px;
   color: #fff;
   /* 로고쪽 밝게 + 그라데이션 */
   background:
     radial-gradient(900px 260px at 140px 55%, rgba(255,255,255,0.28), rgba(255,255,255,0) 60%),
     linear-gradient(90deg, #3f5878 0%, #2f4a6b 35%, #223a57 70%, #1b2f48 100%) !important;
+}
+
+.insurance-header-inner {
+  width: 100%;
+  padding: 0 30px;
+  box-sizing: border-box;
+}
+
+.insurance-brand {
+  display: flex;
+  align-items: center;
+}
+
+.insurance-logo {
+  height: 100px;
+  width: auto;
+}
+
+.insurance-title {
+  font-size: 35px;
+  font-weight: 700;
+  margin: 0;
+  flex: 1;
+  text-align: center;
 }
 
 .page-tabs {
