@@ -1,21 +1,106 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import SideMenu from "../components/SideMenu";
+import { useAuth } from "../context/AuthContext";
+import { apiFetch } from "../utils/api";
 
 export default function Notice() {
-  // 임시 데이터 (나중에 백엔드 연동)
-  const [notices] = useState([
-    { id: 1, title: "2026년 설 연휴 진료 안내", author: "관리자", date: "2026-01-20", views: 156 },
-    { id: 2, title: "신규 의료장비 도입 안내", author: "관리자", date: "2026-01-18", views: 89 },
-    { id: 3, title: "건강검진 예약 시스템 업데이트", author: "관리자", date: "2026-01-15", views: 234 },
-    { id: 4, title: "주차장 이용 안내", author: "관리자", date: "2026-01-10", views: 312 },
-    { id: 5, title: "진료시간 변경 안내", author: "관리자", date: "2026-01-05", views: 445 },
-  ]);
-
+  const { isAdmin } = useAuth();
+  const [notices, setNotices] = useState([]);
+  const [totalElements, setTotalElements] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
   const [searchType, setSearchType] = useState("title");
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  const fetchNotices = async (page = 0) => {
+    setLoading(true);
+    try {
+      let url = `/notices?page=${page}&size=10&searchType=${searchType}`;
+      if (searchKeyword.trim()) {
+        url += `&keyword=${encodeURIComponent(searchKeyword)}`;
+      }
+      const res = await apiFetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        setNotices(data.content);
+        setTotalElements(data.totalElements);
+        setTotalPages(data.totalPages);
+        setCurrentPage(data.number);
+      }
+    } catch (err) {
+      console.error("공지사항 조회 실패:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotices();
+  }, []);
+
+  const handleSearch = () => {
+    fetchNotices(0);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  const handlePageChange = (page) => {
+    if (page >= 0 && page < totalPages) {
+      fetchNotices(page);
+    }
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  };
+
+  const renderPagination = () => {
+    if (totalPages <= 1) return null;
+
+    const pages = [];
+    const startPage = Math.max(0, currentPage - 2);
+    const endPage = Math.min(totalPages - 1, startPage + 4);
+
+    return (
+      <div className="pagination">
+        <button className="page-btn" onClick={() => handlePageChange(0)} disabled={currentPage === 0}>
+          &laquo;
+        </button>
+        <button className="page-btn" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 0}>
+          &lt;
+        </button>
+        {Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((page) => (
+          <button
+            key={page}
+            className={`page-btn ${page === currentPage ? "active" : ""}`}
+            onClick={() => handlePageChange(page)}
+          >
+            {page + 1}
+          </button>
+        ))}
+        <button className="page-btn" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage >= totalPages - 1}>
+          &gt;
+        </button>
+        <button className="page-btn" onClick={() => handlePageChange(totalPages - 1)} disabled={currentPage >= totalPages - 1}>
+          &raquo;
+        </button>
+      </div>
+    );
+  };
 
   return (
     <>
@@ -52,15 +137,18 @@ export default function Notice() {
                 placeholder="검색어를 입력하세요"
                 value={searchKeyword}
                 onChange={(e) => setSearchKeyword(e.target.value)}
+                onKeyDown={handleKeyDown}
                 className="search-input"
               />
-              <button className="search-btn">검색</button>
+              <button className="search-btn" onClick={handleSearch}>검색</button>
             </div>
 
             {/* 목록 정보 */}
             <div className="list-info">
-              <span>전체: <strong>{notices.length}</strong>건</span>
-              <Link to="/notice/write" className="write-btn">글쓰기</Link>
+              <span>전체: <strong>{totalElements}</strong>건</span>
+              {isAdmin && (
+                <Link to="/notice/write" className="write-btn">글쓰기</Link>
+              )}
             </div>
 
             {/* 공지사항 테이블 */}
@@ -75,30 +163,36 @@ export default function Notice() {
                 </tr>
               </thead>
               <tbody>
-                {notices.map((notice, index) => (
-                  <tr key={notice.id}>
-                    <td className="col-no">{notices.length - index}</td>
-                    <td className="col-title">
-                      <Link to={`/notice/${notice.id}`}>{notice.title}</Link>
+                {loading ? (
+                  <tr>
+                    <td colSpan="5" style={{ textAlign: "center", padding: "40px" }}>
+                      로딩 중...
                     </td>
-                    <td className="col-author">{notice.author}</td>
-                    <td className="col-date">{notice.date}</td>
-                    <td className="col-views">{notice.views}</td>
                   </tr>
-                ))}
+                ) : notices.length === 0 ? (
+                  <tr>
+                    <td colSpan="5" style={{ textAlign: "center", padding: "40px" }}>
+                      등록된 공지사항이 없습니다.
+                    </td>
+                  </tr>
+                ) : (
+                  notices.map((notice, index) => (
+                    <tr key={notice.id}>
+                      <td className="col-no">{totalElements - (currentPage * 10) - index}</td>
+                      <td className="col-title">
+                        <Link to={`/notice/${notice.id}`}>{notice.title}</Link>
+                      </td>
+                      <td className="col-author">{notice.author}</td>
+                      <td className="col-date">{formatDate(notice.createdAt)}</td>
+                      <td className="col-views">{notice.viewCount}</td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
 
             {/* 페이지네이션 */}
-            <div className="pagination">
-              <button className="page-btn">&laquo;</button>
-              <button className="page-btn">&lt;</button>
-              <button className="page-btn active">1</button>
-              <button className="page-btn">2</button>
-              <button className="page-btn">3</button>
-              <button className="page-btn">&gt;</button>
-              <button className="page-btn">&raquo;</button>
-            </div>
+            {renderPagination()}
           </main>
         </div>
       </div>

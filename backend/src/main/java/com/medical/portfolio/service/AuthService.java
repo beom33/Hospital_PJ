@@ -2,6 +2,8 @@ package com.medical.portfolio.service;
 
 import com.medical.portfolio.dto.LoginRequest;
 import com.medical.portfolio.dto.LoginResponse;
+import com.medical.portfolio.dto.RegisterRequest;
+import com.medical.portfolio.dto.RegisterResponse;
 import com.medical.portfolio.entity.User;
 import com.medical.portfolio.repository.UserRepository;
 import com.medical.portfolio.util.JwtUtil;
@@ -41,6 +43,34 @@ public class AuthService {
                 user.getEmail(),
                 user.getRole()
         );
+    }
+
+    @Transactional
+    public RegisterResponse register(RegisterRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new RuntimeException("이미 사용 중인 아이디입니다.");
+        }
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("이미 등록된 이메일입니다.");
+        }
+
+        String role = "USER";
+        if (request.getRole() != null && request.getRole().equals("ADMIN")) {
+            role = "ADMIN";
+        }
+
+        User user = User.builder()
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .email(request.getEmail())
+                .name(request.getName())
+                .role(role)
+                .build();
+
+        userRepository.save(user);
+
+        return new RegisterResponse("회원가입이 완료되었습니다.", user.getUsername());
     }
 
     @Transactional

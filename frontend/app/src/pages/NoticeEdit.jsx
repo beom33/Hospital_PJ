@@ -1,17 +1,43 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import SideMenu from "../components/SideMenu";
 import { apiFetch } from "../utils/api";
 
-export default function NoticeWrite() {
+export default function NoticeEdit() {
+  const { id } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
     content: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
+
+  useEffect(() => {
+    const fetchNotice = async () => {
+      try {
+        const res = await apiFetch(`/notices/${id}`);
+        if (res.ok) {
+          const data = await res.json();
+          setFormData({
+            title: data.title,
+            content: data.content,
+          });
+        } else {
+          alert("공지사항을 찾을 수 없습니다.");
+          navigate("/notice");
+        }
+      } catch (err) {
+        alert("데이터를 불러오는 중 오류가 발생했습니다.");
+        navigate("/notice");
+      } finally {
+        setLoadingData(false);
+      }
+    };
+    fetchNotice();
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,34 +63,47 @@ export default function NoticeWrite() {
     setIsLoading(true);
 
     try {
-      const res = await apiFetch("/notices", {
-        method: "POST",
+      const res = await apiFetch(`/notices/${id}`, {
+        method: "PUT",
         body: JSON.stringify(formData),
       });
 
       if (res.ok) {
-        alert("공지사항이 등록되었습니다.");
-        navigate("/notice");
+        alert("공지사항이 수정되었습니다.");
+        navigate(`/notice/${id}`);
       } else {
         const errorText = await res.text();
-        alert(errorText || "등록에 실패했습니다.");
+        alert(errorText || "수정에 실패했습니다.");
       }
     } catch (err) {
-      alert("등록 중 오류가 발생했습니다.");
+      alert("수정 중 오류가 발생했습니다.");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleCancel = () => {
-    if (formData.title || formData.content) {
-      if (window.confirm("작성 중인 내용이 있습니다. 취소하시겠습니까?")) {
-        navigate("/notice");
-      }
-    } else {
-      navigate("/notice");
+    if (window.confirm("수정을 취소하시겠습니까?")) {
+      navigate(`/notice/${id}`);
     }
   };
+
+  if (loadingData) {
+    return (
+      <>
+        <Header />
+        <div className="page-container">
+          <div className="page-content">
+            <SideMenu />
+            <main className="main-content">
+              <p style={{ textAlign: "center", padding: "40px" }}>로딩 중...</p>
+            </main>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
@@ -73,7 +112,7 @@ export default function NoticeWrite() {
         <div className="page-header">
           <h1 className="page-title">공지사항</h1>
           <div className="breadcrumb">
-            <Link to="/">홈</Link> &gt; <Link to="/notice">공지사항</Link> &gt; <span>글쓰기</span>
+            <Link to="/">홈</Link> &gt; <Link to="/notice">공지사항</Link> &gt; <span>수정</span>
           </div>
         </div>
 
@@ -82,7 +121,7 @@ export default function NoticeWrite() {
 
           <main className="main-content">
             <div className="content-header">
-              <h2>글쓰기</h2>
+              <h2>공지사항 수정</h2>
             </div>
 
             <form onSubmit={handleSubmit} className="write-form">
@@ -119,7 +158,7 @@ export default function NoticeWrite() {
                   취소
                 </button>
                 <button type="submit" className="submit-btn" disabled={isLoading}>
-                  {isLoading ? "등록 중..." : "등록"}
+                  {isLoading ? "수정 중..." : "수정"}
                 </button>
               </div>
             </form>

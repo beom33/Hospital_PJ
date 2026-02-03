@@ -10,6 +10,7 @@ export default function Register() {
     confirmPassword: "",
     email: "",
     name: "",
+    role: "USER",
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -63,6 +64,7 @@ export default function Register() {
           password: formData.password,
           email: formData.email,
           name: formData.name,
+          role: formData.role,
         }),
       });
 
@@ -119,6 +121,38 @@ export default function Register() {
               </p>
 
               <form onSubmit={handleSubmit}>
+                <div style={{ marginBottom: "16px" }}>
+                  <label className="p2" style={{ display: "block", marginBottom: "8px", color: "#333", fontWeight: "500" }}>
+                    회원 유형 *
+                  </label>
+                  <div style={{ display: "flex", gap: "20px" }}>
+                    <label style={{ display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", fontSize: "15px", color: "#333" }}>
+                      <input
+                        type="radio"
+                        name="role"
+                        value="USER"
+                        checked={formData.role === "USER"}
+                        onChange={handleChange}
+                        disabled={isLoading}
+                        style={{ width: "18px", height: "18px", accentColor: "#e63946" }}
+                      />
+                      일반회원
+                    </label>
+                    <label style={{ display: "flex", alignItems: "center", gap: "6px", cursor: "pointer", fontSize: "15px", color: "#333" }}>
+                      <input
+                        type="radio"
+                        name="role"
+                        value="ADMIN"
+                        checked={formData.role === "ADMIN"}
+                        onChange={handleChange}
+                        disabled={isLoading}
+                        style={{ width: "18px", height: "18px", accentColor: "#e63946" }}
+                      />
+                      관리자
+                    </label>
+                  </div>
+                </div>
+
                 <div style={{ marginBottom: "16px" }}>
                   <label className="p2" style={{ display: "block", marginBottom: "8px", color: "#333", fontWeight: "500" }}>
                     아이디 *

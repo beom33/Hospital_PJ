@@ -2,6 +2,8 @@ package com.medical.portfolio.controller;
 
 import com.medical.portfolio.dto.LoginRequest;
 import com.medical.portfolio.dto.LoginResponse;
+import com.medical.portfolio.dto.RegisterRequest;
+import com.medical.portfolio.dto.RegisterResponse;
 import com.medical.portfolio.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,16 @@ public class AuthController {
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             LoginResponse response = authService.login(loginRequest);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        try {
+            RegisterResponse response = authService.register(registerRequest);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

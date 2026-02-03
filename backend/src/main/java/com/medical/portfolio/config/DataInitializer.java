@@ -2,8 +2,10 @@ package com.medical.portfolio.config;
 
 import com.medical.portfolio.entity.Hospital;
 import com.medical.portfolio.entity.MedicalFee;
+import com.medical.portfolio.entity.Notice;
 import com.medical.portfolio.repository.HospitalRepository;
 import com.medical.portfolio.repository.MedicalFeeRepository;
+import com.medical.portfolio.repository.NoticeRepository;
 import com.medical.portfolio.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -16,6 +18,7 @@ public class DataInitializer implements CommandLineRunner {
     private final AuthService authService;
     private final HospitalRepository hospitalRepository;
     private final MedicalFeeRepository medicalFeeRepository;
+    private final NoticeRepository noticeRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -32,6 +35,49 @@ public class DataInitializer implements CommandLineRunner {
             initializeMedicalFeeData();
             System.out.println("병원 및 비급여 진료비 샘플 데이터가 생성되었습니다.");
         }
+
+        // 샘플 공지사항 데이터 생성
+        if (noticeRepository.count() == 0) {
+            initializeNoticeData();
+            System.out.println("공지사항 샘플 데이터가 생성되었습니다.");
+        }
+    }
+
+    private void initializeNoticeData() {
+        noticeRepository.save(Notice.builder()
+                .title("2026년 설 연휴 진료 안내")
+                .content("안녕하세요. Medi-Best 병원입니다.\n\n2026년 설 연휴 진료 안내드립니다.\n\n- 1월 27일(화) ~ 1월 29일(목): 휴진\n- 1월 30일(금): 정상 진료\n\n응급 환자는 응급실을 이용해 주시기 바랍니다.\n감사합니다.")
+                .author("관리자")
+                .viewCount(156)
+                .build());
+
+        noticeRepository.save(Notice.builder()
+                .title("비급여 진료비 조회 시스템 오픈 안내")
+                .content("안녕하세요.\n\n비급여 진료비 조회 시스템이 정식 오픈되었습니다.\n\n병원별 비급여 항목의 가격을 비교하실 수 있으며, 건강보험심사평가원 공공데이터를 기반으로 정확한 정보를 제공합니다.\n\n많은 이용 부탁드립니다.")
+                .author("관리자")
+                .viewCount(243)
+                .build());
+
+        noticeRepository.save(Notice.builder()
+                .title("개인정보 처리방침 변경 안내")
+                .content("개인정보 처리방침이 2026년 2월 1일부로 변경됩니다.\n\n주요 변경 사항:\n1. 개인정보 보유 기간 변경\n2. 제3자 제공 항목 추가\n3. 개인정보 보호 책임자 변경\n\n자세한 내용은 개인정보 처리방침 페이지를 참조해 주세요.")
+                .author("관리자")
+                .viewCount(89)
+                .build());
+
+        noticeRepository.save(Notice.builder()
+                .title("시스템 점검 안내 (2월 5일)")
+                .content("시스템 안정화를 위한 정기 점검이 진행됩니다.\n\n- 점검일시: 2026년 2월 5일(목) 02:00 ~ 06:00\n- 점검내용: 서버 업그레이드 및 보안 패치\n\n점검 시간 동안 서비스 이용이 제한될 수 있습니다.\n이용에 불편을 드려 죄송합니다.")
+                .author("관리자")
+                .viewCount(67)
+                .build());
+
+        noticeRepository.save(Notice.builder()
+                .title("회원가입 이벤트 안내")
+                .content("신규 회원가입 이벤트를 진행합니다.\n\n- 기간: 2026년 2월 1일 ~ 2월 28일\n- 대상: 신규 가입 회원\n- 혜택: 비급여 진료비 비교 리포트 무료 제공\n\n많은 참여 부탁드립니다.")
+                .author("관리자")
+                .viewCount(198)
+                .build());
     }
 
     private void initializeMedicalFeeData() {

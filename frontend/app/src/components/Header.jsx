@@ -1,11 +1,19 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Header({ simplified = false }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user, isLoggedIn, isAdmin, logout } = useAuth();
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
   };
 
   // 비급여 페이지용 간소화된 헤더
@@ -71,18 +79,48 @@ export default function Header({ simplified = false }) {
             </div>
             <div className="header-right">
               <div className="header-utils desktop-only">
-                <ul style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                  <li className="button">
-                    <Link to="/login" className="p1 btnset btnset-primary btnset-sm">
-                      로그인
-                    </Link>
-                  </li>
-                  <li className="button">
-                    <Link to="/register" className="p1 btnset btnset-primary btnset-sm">
-                      회원가입
-                    </Link>
-                  </li>
-                </ul>
+                {isLoggedIn ? (
+                  <ul style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                    <li className="p1" style={{ color: "#fff", whiteSpace: "nowrap" }}>
+                      {user.name}님
+                      {isAdmin && (
+                        <span style={{
+                          marginLeft: "6px",
+                          background: "#e63946",
+                          color: "#fff",
+                          padding: "2px 8px",
+                          borderRadius: "10px",
+                          fontSize: "12px",
+                          fontWeight: "600"
+                        }}>
+                          관리자
+                        </span>
+                      )}
+                    </li>
+                    <li className="button">
+                      <button
+                        onClick={handleLogout}
+                        className="p1 btnset btnset-primary btnset-sm"
+                        style={{ cursor: "pointer" }}
+                      >
+                        로그아웃
+                      </button>
+                    </li>
+                  </ul>
+                ) : (
+                  <ul style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                    <li className="button">
+                      <Link to="/login" className="p1 btnset btnset-primary btnset-sm">
+                        로그인
+                      </Link>
+                    </li>
+                    <li className="button">
+                      <Link to="/register" className="p1 btnset btnset-primary btnset-sm">
+                        회원가입
+                      </Link>
+                    </li>
+                  </ul>
+                )}
               </div>
               <button className="btn-momenu mobile-only" onClick={toggleMenu}>
                 <span className="hamburger-line"></span>
@@ -103,7 +141,42 @@ export default function Header({ simplified = false }) {
           </button>
         </div>
         <div className="mobile-menu-login">
-          <Link to="/login" onClick={() => setMenuOpen(false)}>→ 로그인을 해주세요.</Link>
+          {isLoggedIn ? (
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span>
+                {user.name}님
+                {isAdmin && (
+                  <span style={{
+                    marginLeft: "6px",
+                    background: "#e63946",
+                    color: "#fff",
+                    padding: "2px 8px",
+                    borderRadius: "10px",
+                    fontSize: "12px",
+                    fontWeight: "600"
+                  }}>
+                    관리자
+                  </span>
+                )}
+              </span>
+              <button
+                onClick={() => { handleLogout(); setMenuOpen(false); }}
+                style={{
+                  background: "#e63946",
+                  color: "#fff",
+                  border: "none",
+                  padding: "6px 14px",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontSize: "14px"
+                }}
+              >
+                로그아웃
+              </button>
+            </div>
+          ) : (
+            <Link to="/login" onClick={() => setMenuOpen(false)}>→ 로그인을 해주세요.</Link>
+          )}
         </div>
         <ul className="mobile-menu-list">
           <li className="mobile-menu-item">
