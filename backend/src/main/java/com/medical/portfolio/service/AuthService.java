@@ -5,6 +5,7 @@ import com.medical.portfolio.dto.LoginResponse;
 import com.medical.portfolio.dto.RegisterRequest;
 import com.medical.portfolio.dto.RegisterResponse;
 import com.medical.portfolio.entity.User;
+import com.medical.portfolio.repository.EmailVerificationRepository;
 import com.medical.portfolio.repository.UserRepository;
 import com.medical.portfolio.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final EmailVerificationRepository emailVerificationRepository;
 
     @Transactional
     public LoginResponse login(LoginRequest loginRequest) {
@@ -47,6 +49,15 @@ public class AuthService {
 
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
+        // 이메일 인증 확인
+        boolean verified = emailVerificationRepository
+                .findTopByEmailOrderByExpiresAtDesc(request.getEmail())
+                .map(v -> v.isVerified())
+                .orElse(false);
+        if (!verified) {
+            throw new RuntimeException("이메일 인증이 완료되지 않았습니다.");
+        }
+
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new RuntimeException("이미 사용 중인 아이디입니다.");
         }
@@ -69,6 +80,9 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
+
+        // 인증 레코드 삭제
+        emailVerificationRepository.deleteByEmail(request.getEmail());
 
         return new RegisterResponse("회원가입이 완료되었습니다.", user.getUsername());
     }
