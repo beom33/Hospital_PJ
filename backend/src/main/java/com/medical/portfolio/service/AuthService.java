@@ -58,13 +58,6 @@ public class AuthService {
             throw new RuntimeException("이메일 인증이 완료되지 않았습니다.");
         }
 
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("이미 사용 중인 아이디입니다.");
-        }
-
-        if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("이미 등록된 이메일입니다.");
-        }
 
         String role = "USER";
         if (request.getRole() != null && request.getRole().equals("ADMIN")) {

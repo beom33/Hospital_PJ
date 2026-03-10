@@ -3,6 +3,7 @@ package com.medical.portfolio.service;
 import com.medical.portfolio.entity.EmailVerification;
 import com.medical.portfolio.repository.EmailVerificationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
     private final EmailVerificationRepository emailVerificationRepository;
+
+    @Value("${spring.mail.username}")
+    private String fromEmail;
 
     @Transactional
     public void sendVerificationEmail(String email) {
@@ -37,6 +41,7 @@ public class EmailService {
 
         // 이메일 발송
         SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
         message.setTo(email);
         message.setSubject("[Medi-best] 이메일 인증 코드");
         message.setText("안녕하세요! Medi-best입니다.\n\n" +
