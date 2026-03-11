@@ -7,6 +7,9 @@ import NoticeWrite from "./pages/NoticeWrite";
 import NoticeDetail from "./pages/NoticeDetail";
 import NoticeEdit from "./pages/NoticeEdit";
 import Insurance from "./pages/Insurance";
+import FindAccount from "./pages/FindAccount";
+import ChangePassword from "./pages/ChangePassword";
+import MyPage from "./pages/MyPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -29,6 +32,9 @@ function App() {
         } />
         <Route path="/notice/:id" element={<NoticeDetail />} />
         <Route path="/insurance" element={<Insurance />} />
+        <Route path="/find-account" element={<FindAccount />} />
+        <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/mypage" element={<MyPage />} />
       </Routes>
     </Router>
   );

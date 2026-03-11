@@ -173,6 +173,11 @@ export default function Login() {
                     회원가입
                   </Link>
                 </p>
+                <p className="p2" style={{ marginTop: "8px" }}>
+                  <Link to="/find-account" style={{ color: "#888", fontSize: "13px", textDecoration: "none" }}>
+                    아이디 찾기 / 비밀번호 찾기
+                  </Link>
+                </p>
               </div>
             </div>
           </div>

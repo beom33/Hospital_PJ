@@ -82,7 +82,7 @@ export default function Header({ simplified = false }) {
                 {isLoggedIn ? (
                   <ul style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                     <li className="p1" style={{ color: "#fff", whiteSpace: "nowrap" }}>
-                      {user.name}님
+                      {user.nickname || user.name}님
                       {isAdmin && (
                         <span style={{
                           marginLeft: "6px",
@@ -96,6 +96,11 @@ export default function Header({ simplified = false }) {
                           관리자
                         </span>
                       )}
+                    </li>
+                    <li className="button">
+                      <Link to="/mypage" className="p1 btnset btnset-primary btnset-sm">
+                        마이페이지
+                      </Link>
                     </li>
                     <li className="button">
                       <button
@@ -144,7 +149,7 @@ export default function Header({ simplified = false }) {
           {isLoggedIn ? (
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span>
-                {user.name}님
+                {user.nickname || user.name}님
                 {isAdmin && (
                   <span style={{
                     marginLeft: "6px",

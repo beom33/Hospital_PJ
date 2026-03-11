@@ -68,6 +68,18 @@ public class EmailService {
         return true;
     }
 
+    public void sendTempPassword(String email, String username, String tempPassword) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
+        message.setTo(email);
+        message.setSubject("[Medi-best] 임시 비밀번호 안내");
+        message.setText("안녕하세요! Medi-best입니다.\n\n" +
+                "아이디: " + username + "\n" +
+                "임시 비밀번호: " + tempPassword + "\n\n" +
+                "로그인 후 반드시 비밀번호를 변경해주세요.");
+        mailSender.send(message);
+    }
+
     public boolean isEmailVerified(String email) {
         return emailVerificationRepository
                 .findTopByEmailOrderByExpiresAtDesc(email)

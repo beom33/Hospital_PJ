@@ -10,6 +10,7 @@ export default function Register() {
     confirmPassword: "",
     email: "",
     name: "",
+    nickname: "",
     role: "USER",
   });
   const [verifyCode, setVerifyCode] = useState("");
@@ -98,7 +99,7 @@ export default function Register() {
     e.preventDefault();
     setError("");
 
-    if (!formData.username || !formData.password || !formData.name || !formData.email) {
+    if (!formData.username || !formData.password || !formData.name || !formData.nickname || !formData.email) {
       setError("모든 필드를 입력해주세요.");
       return;
     }
@@ -125,6 +126,7 @@ export default function Register() {
           password: formData.password,
           email: formData.email,
           name: formData.name,
+          nickname: formData.nickname,
           role: formData.role,
         }),
       });
@@ -197,6 +199,12 @@ export default function Register() {
                 <div style={{ marginBottom: "16px" }}>
                   <label className="p2" style={{ display: "block", marginBottom: "8px", color: "#333", fontWeight: "500" }}>이름 *</label>
                   <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="이름을 입력하세요" required disabled={isLoading} style={inputStyle} />
+                </div>
+
+                {/* 닉네임 */}
+                <div style={{ marginBottom: "16px" }}>
+                  <label className="p2" style={{ display: "block", marginBottom: "8px", color: "#333", fontWeight: "500" }}>닉네임 *</label>
+                  <input type="text" name="nickname" value={formData.nickname} onChange={handleChange} placeholder="닉네임을 입력하세요" required disabled={isLoading} style={inputStyle} />
                 </div>
 
                 {/* 이메일 + 인증 */}

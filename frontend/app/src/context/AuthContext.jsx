@@ -24,6 +24,7 @@ export function AuthProvider({ children }) {
       id: loginData.id,
       username: loginData.username,
       name: loginData.name,
+      nickname: loginData.nickname,
       email: loginData.email,
       role: loginData.role,
     };
