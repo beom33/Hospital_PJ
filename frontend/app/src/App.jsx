@@ -10,6 +10,7 @@ import Insurance from "./pages/Insurance";
 import FindAccount from "./pages/FindAccount";
 import ChangePassword from "./pages/ChangePassword";
 import MyPage from "./pages/MyPage";
+import ProfilePage from "./pages/ProfilePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
         <Route path="/find-account" element={<FindAccount />} />
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/mypage" element={<MyPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
       </Routes>
     </Router>
   );

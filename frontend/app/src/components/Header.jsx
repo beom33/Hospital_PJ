@@ -81,7 +81,22 @@ export default function Header({ simplified = false }) {
               <div className="header-utils desktop-only">
                 {isLoggedIn ? (
                   <ul style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                    <li className="p1" style={{ color: "#fff", whiteSpace: "nowrap" }}>
+                    <li className="p1" style={{ color: "#fff", whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: "8px" }}>
+                                 
+                <Link to="/profile">
+                        {user.profileImage ? (
+                          <img
+                            src={`http://localhost:8080/uploads/${user.profileImage}`}
+                            alt="프로필"
+                            style={{ width: "30px", height: "30px", borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(255,255,255,0.5)", cursor: "pointer" }}
+                          />
+                        ) : (
+                          <div style={{ width: "30px", height: "30px", borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", cursor: "pointer" }}>
+                            👤
+                          </div>
+                        )}
+                        </Link>
+                    
                       {user.nickname || user.name}님
                       {isAdmin && (
                         <span style={{
@@ -98,7 +113,7 @@ export default function Header({ simplified = false }) {
                       )}
                     </li>
                     <li className="button">
-                      <Link to="/mypage" className="p1 btnset btnset-primary btnset-sm">
+                      <Link to="/mypage" className="p1 btnset btnset-sm" style={{ background: "transparent", border: "rgba(255,255,255,0.5)", color: "#fff" }}>
                         마이페이지
                       </Link>
                     </li>
