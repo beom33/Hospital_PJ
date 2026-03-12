@@ -35,6 +35,9 @@ public class User {
     @Column(length = 50)
     private String nickname;
 
+    @Column(length = 255)
+    private String profileImage;
+
     @Column(length = 20)
     private String role;
 

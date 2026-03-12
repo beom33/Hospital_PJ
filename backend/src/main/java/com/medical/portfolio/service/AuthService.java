@@ -45,6 +45,7 @@ public class AuthService {
                 user.getUsername(),
                 user.getName(),
                 user.getNickname(),
+                user.getProfileImage(),
                 user.getEmail(),
                 user.getRole()
         );
@@ -102,14 +103,31 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
     }
 
-    // 내 정보 수정 (이름, 이메일, 닉네임)
+    // 내 정보 수정 (이름, 이메일)
     @Transactional
-    public void updateMyInfo(String username, String name, String email, String nickname) {
+    public void updateMyInfo(String username, String name, String email) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
         user.setName(name);
         user.setEmail(email);
+        userRepository.save(user);
+    }
+
+    // 프로필 수정 (닉네임)
+    @Transactional
+    public void updateNickname(String username, String nickname) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
         user.setNickname(nickname);
+        userRepository.save(user);
+    }
+
+    // 프로필 이미지 수정
+    @Transactional
+    public void updateProfileImage(String username, String filename) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        user.setProfileImage(filename);
         userRepository.save(user);
     }
 

@@ -17,15 +17,17 @@ public class LoginResponse {
     private String username;
     private String name;
     private String nickname;
+    private String profileImage;
     private String email;
     private String role;
 
-    public LoginResponse(String token, Long id, String username, String name, String nickname, String email, String role) {
+    public LoginResponse(String token, Long id, String username, String name, String nickname, String profileImage, String email, String role) {
         this.token = token;
         this.id = id;
         this.username = username;
         this.name = name;
         this.nickname = nickname;
+        this.profileImage = profileImage;
         this.email = email;
         this.role = role;
     }

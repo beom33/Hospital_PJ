@@ -41,6 +41,7 @@ public class SecurityConfig {
                                 "/api/send-verification", "/api/verify-email",
                                 "/api/find-username", "/api/reset-password").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/api/medical-fees/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/notices/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/notices").permitAll()
