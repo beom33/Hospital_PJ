@@ -47,6 +47,7 @@ export default function MyPage() {
     e.preventDefault();
     setInfoMsg(""); setInfoError("");
     if (!info.name || !info.email) { setInfoError("이름, 이메일을 입력해주세요."); return; }
+    if (!window.confirm("회원정보를 변경하시겠습니까?")) return;
     setIsLoading(true);
     try {
       const res = await fetch("http://localhost:8080/api/mypage", {
@@ -72,11 +73,12 @@ export default function MyPage() {
     e.preventDefault();
     setPwMsg(""); setPwError("");
     if (!pwForm.currentPassword || !pwForm.newPassword || !pwForm.confirmPassword) {
-      setPwError("모든 필드를 입력해주세요."); return;
+      setPwError("비밀번호를 입력해주세요."); return;
     }
     if (pwForm.newPassword.length < 6) { setPwError("새 비밀번호는 최소 6자 이상이어야 합니다."); return; }
     if (pwForm.newPassword !== pwForm.confirmPassword) { setPwError("새 비밀번호가 일치하지 않습니다."); return; }
     if (pwForm.currentPassword === pwForm.newPassword) { setPwError("현재 비밀번호와 새 비밀번호가 같습니다."); return; }
+    if (!window.confirm("비밀번호를 변경하시겠습니까?")) return;
     setIsLoading(true);
     try {
       const res = await fetch("http://localhost:8080/api/change-password", {

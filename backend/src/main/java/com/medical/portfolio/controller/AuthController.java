@@ -68,7 +68,7 @@ public class AuthController {
     public ResponseEntity<?> verifyEmail(@RequestBody Map<String, String> body) {
         try {
             emailService.verifyCode(body.get("email"), body.get("code"));
-            return ResponseEntity.ok("이메일 인증이 완료되었습니다.");
+            return ResponseEntity.ok("이메일 인증이 완료되었습니다."); 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -137,6 +137,13 @@ public class AuthController {
 
             File dir = new File(uploadDir);
             if (!dir.exists()) dir.mkdirs();
+
+            // 기존 프로필 이미지 삭제
+            String oldImage = authService.getProfileImage(username);
+            if (oldImage != null && !oldImage.isBlank()) {
+                File oldFile = new File(uploadDir, oldImage);
+                if (oldFile.exists()) oldFile.delete();
+            }
 
             String originalFilename = file.getOriginalFilename();
             String ext = (originalFilename != null && originalFilename.contains("."))

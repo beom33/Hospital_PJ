@@ -141,6 +141,7 @@ export default function ProfilePage() {
   const handleSave = async () => {
     setMsg(""); setError("");
     if (!nickname.trim()) { setError("닉네임을 입력해주세요."); return; }
+    if (!window.confirm("프로필을 저장하시겠습니까?")) return;
     setIsLoading(true);
     try {
       let newProfileImage = user?.profileImage || "";

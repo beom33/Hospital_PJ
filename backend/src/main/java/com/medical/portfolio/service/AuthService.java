@@ -122,6 +122,13 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    // 현재 프로필 이미지 파일명 조회
+    public String getProfileImage(String username) {
+        return userRepository.findByUsername(username)
+                .map(User::getProfileImage)
+                .orElse(null);
+    }
+
     // 프로필 이미지 수정
     @Transactional
     public void updateProfileImage(String username, String filename) {
