@@ -23,12 +23,12 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/notice" element={<Notice />} />
         <Route path="/notice/write" element={
-          <ProtectedRoute adminOnly>
+          <ProtectedRoute>
             <NoticeWrite />
           </ProtectedRoute>
         } />
         <Route path="/notice/edit/:id" element={
-          <ProtectedRoute adminOnly>
+          <ProtectedRoute>
             <NoticeEdit />
           </ProtectedRoute>
         } />

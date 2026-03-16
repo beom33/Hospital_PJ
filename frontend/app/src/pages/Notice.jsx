@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 import { apiFetch } from "../utils/api";
 
 export default function Notice() {
-  const { isAdmin } = useAuth();
+  const { isAdmin, isLoggedIn } = useAuth();
   const [notices, setNotices] = useState([]);
   const [totalElements, setTotalElements] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -146,7 +146,7 @@ export default function Notice() {
             {/* 목록 정보 */}
             <div className="list-info">
               <span>전체: <strong>{totalElements}</strong>건</span>
-              {isAdmin && (
+              {isLoggedIn && (
                 <Link to="/notice/write" className="write-btn">글쓰기</Link>
               )}
             </div>

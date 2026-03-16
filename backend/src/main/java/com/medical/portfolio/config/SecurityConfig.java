@@ -40,14 +40,15 @@ public class SecurityConfig {
                         .requestMatchers("/api/login", "/api/register", "/api/health",
                                 "/api/send-verification", "/api/verify-email",
                                 "/api/find-username", "/api/reset-password").permitAll()
+                        .requestMatchers("/error").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/api/medical-fees/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/notices/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/notices").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/notices").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/notices/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/notices/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/notices", "/api/notices/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/notices/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/notices/**").authenticated()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

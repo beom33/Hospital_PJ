@@ -9,7 +9,7 @@ import { apiFetch } from "../utils/api";
 export default function NoticeDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { isAdmin } = useAuth();
+  const { isAdmin, user } = useAuth();
   const [notice, setNotice] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -131,11 +131,23 @@ export default function NoticeDetail() {
                   </span>
                 ))}
               </div>
+
+              {/* 첨부 이미지 */}
+              {notice.imagePath && (
+                <div style={{ marginTop: "24px", borderTop: "1px solid #eee", paddingTop: "16px" }}>
+                  <p style={{ fontSize: "13px", color: "#888", marginBottom: "8px" }}>첨부 이미지</p>
+                  <img
+                    src={`http://localhost:8080/uploads/${notice.imagePath}`}
+                    alt="첨부 이미지"
+                    style={{ maxWidth: "100%", borderRadius: "8px", border: "1px solid #ddd" }}
+                  />
+                </div>
+              )}
             </article>
 
             <div className="detail-buttons">
               <Link to="/notice" className="list-btn">목록</Link>
-              {isAdmin && (
+              {(isAdmin || user?.username === notice.authorUsername) && (
                 <div className="edit-buttons">
                   <Link to={`/notice/edit/${notice.id}`} className="edit-btn">수정</Link>
                   <button onClick={handleDelete} className="delete-btn">삭제</button>

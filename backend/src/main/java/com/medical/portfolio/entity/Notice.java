@@ -29,6 +29,12 @@ public class Notice {
     @Column(nullable = false, length = 50)
     private String author;
 
+    @Column(name = "author_username", length = 50)
+    private String authorUsername;
+
+    @Column(name = "image_path", length = 255)
+    private String imagePath;
+
     @Column(name = "view_count")
     @Builder.Default
     private Integer viewCount = 0;
