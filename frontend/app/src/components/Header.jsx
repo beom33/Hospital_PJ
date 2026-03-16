@@ -99,17 +99,20 @@ export default function Header({ simplified = false }) {
                     
                       {user.nickname || user.name}님
                       {isAdmin && (
-                        <span style={{
-                          marginLeft: "6px",
-                          background: "#e63946",
-                          color: "#fff",
-                          padding: "2px 8px",
-                          borderRadius: "10px",
-                          fontSize: "12px",
-                          fontWeight: "600"
-                        }}>
-                          관리자
-                        </span>
+                        <Link to="/admin" style={{ textDecoration: "none" }}>
+                          <span style={{
+                            marginLeft: "6px",
+                            background: "#e63946",
+                            color: "#fff",
+                            padding: "2px 8px",
+                            borderRadius: "10px",
+                            fontSize: "12px",
+                            fontWeight: "600",
+                            cursor: "pointer"
+                          }}>
+                            관리자
+                          </span>
+                        </Link>
                       )}
                     </li>
                     <li className="button">

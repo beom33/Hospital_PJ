@@ -138,6 +138,16 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    // 회원탈퇴
+    @Transactional
+    public String deleteUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        String profileImage = user.getProfileImage();
+        userRepository.delete(user);
+        return profileImage; // 컨트롤러에서 파일 삭제용
+    }
+
     // 아이디 찾기: 이름 + 이메일로 아이디 반환
     public String findUsername(String name, String email) {
         User user = userRepository.findFirstByNameAndEmail(name, email)

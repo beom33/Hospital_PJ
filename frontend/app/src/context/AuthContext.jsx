@@ -4,6 +4,7 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // 앱 시작 시 세션에서 복원 (브라우저/탭 닫으면 자동 삭제)
   useEffect(() => {
@@ -17,6 +18,7 @@ export function AuthProvider({ children }) {
         sessionStorage.removeItem("user");
       }
     }
+    setIsLoading(false);
   }, []);
 
   // 탭이 다시 활성화될 때 서버 연결 확인 → 서버 꺼지면 자동 로그아웃
@@ -65,7 +67,7 @@ export function AuthProvider({ children }) {
   const isAdmin = user?.role === "ADMIN";
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoggedIn, isAdmin }}>
+    <AuthContext.Provider value={{ user, login, logout, isLoggedIn, isAdmin, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

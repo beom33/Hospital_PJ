@@ -174,6 +174,28 @@ public class AuthController {
         }
     }
 
+    // 회원탈퇴
+    @DeleteMapping("/profile")
+    public ResponseEntity<?> deleteAccount(jakarta.servlet.http.HttpServletRequest request) {
+        try {
+            String authHeader = request.getHeader("Authorization");
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return ResponseEntity.status(401).body("로그인이 필요합니다.");
+            }
+            String token = authHeader.substring(7);
+            String username = jwtUtil.getUsernameFromToken(token);
+
+            String profileImage = authService.deleteUser(username);
+            if (profileImage != null && !profileImage.isBlank()) {
+                File oldFile = new File(uploadDir, profileImage);
+                if (oldFile.exists()) oldFile.delete();
+            }
+            return ResponseEntity.ok("회원탈퇴가 완료되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PostMapping("/find-username")
     public ResponseEntity<?> findUsername(@RequestBody Map<String, String> body) {
         try {

@@ -11,6 +11,7 @@ import FindAccount from "./pages/FindAccount";
 import ChangePassword from "./pages/ChangePassword";
 import MyPage from "./pages/MyPage";
 import ProfilePage from "./pages/ProfilePage";
+import AdminPage from "./pages/AdminPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -37,6 +38,11 @@ function App() {
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/admin" element={
+          <ProtectedRoute adminOnly>
+            <AdminPage />
+          </ProtectedRoute>
+        } />
       </Routes>
     </Router>
   );

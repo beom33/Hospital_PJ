@@ -8,7 +8,7 @@ const IMAGE_BASE = "http://localhost:8080/uploads/";
 const CROP_SIZE = 220; // 크롭 원형 크기 (px)
 
 export default function ProfilePage() {
-  const { user, login } = useAuth();
+  const { user, login, logout } = useAuth();
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
   const fileInputRef = useRef(null);
@@ -29,6 +29,7 @@ export default function ProfilePage() {
   const cropContainerRef = useRef(null);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [msg, setMsg] = useState("");
   const [error, setError] = useState("");
 
@@ -184,10 +185,27 @@ export default function ProfilePage() {
     }
   };
 
+  // ─── 회원탈퇴 ───
+  const handleDeleteAccount = async () => {
+    if (!window.confirm("정말로 회원탈퇴 하시겠습니까?\n탈퇴 후 모든 정보가 삭제되며 복구할 수 없습니다.")) return;
+    setIsDeleting(true);
+    try {
+      const res = await fetch("http://localhost:8080/api/profile", {
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error(await res.text());
+      logout();
+      navigate("/");
+    } catch (err) {
+      setError(err.message || "탈퇴 중 오류가 발생했습니다.");
+      setIsDeleting(false);
+    }
+  };
+
   // ─── 크롭용 이미지 스타일 계산 ───
   const getCropImgStyle = () => {
     if (!originalUrl) return {};
-    const baseScale = zoom; // baseScale은 이미지 로드 후 계산되나, 여기선 CSS cover를 기본으로 함
     return {
       position: "absolute",
       width: `${100 * zoom}%`,
@@ -306,6 +324,23 @@ export default function ProfilePage() {
                   placeholder="닉네임을 입력하세요" disabled={isLoading}
                   style={{ width: "100%", padding: "14px 16px", border: "1px solid #ddd", borderRadius: "8px", fontSize: "15px", boxSizing: "border-box" }}
                 />
+              </div>
+
+              {/* 회원탈퇴 */}
+              <div style={{ marginBottom: "24px", paddingTop: "8px", borderTop: "1px solid #eee" }}>
+                <button
+                  type="button"
+                  onClick={handleDeleteAccount}
+                  disabled={isDeleting || isLoading}
+                  style={{
+                    width: "100%", padding: "12px", background: "none",
+                    border: "1px solid #e63946", borderRadius: "8px",
+                    color: "#e63946", fontSize: "14px", cursor: isDeleting ? "not-allowed" : "pointer",
+                    opacity: isDeleting ? 0.6 : 1
+                  }}
+                >
+                  {isDeleting ? "탈퇴 처리 중..." : "회원탈퇴"}
+                </button>
               </div>
 
               {error && <div style={{ padding: "12px", background: "#fee", color: "#c33", borderRadius: "8px", marginBottom: "16px", fontSize: "14px", textAlign: "center" }}>{error}</div>}
