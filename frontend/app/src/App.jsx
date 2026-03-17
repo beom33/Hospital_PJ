@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Notice from "./pages/Notice";
 import NoticeWrite from "./pages/NoticeWrite";
+import HospitalSearch from "./pages/HospitalSearch";
 import NoticeDetail from "./pages/NoticeDetail";
 import NoticeEdit from "./pages/NoticeEdit";
 import Insurance from "./pages/Insurance";
@@ -33,6 +34,7 @@ function App() {
           </ProtectedRoute>
         } />
         <Route path="/notice/:id" element={<NoticeDetail />} />
+        <Route path="/hospital" element={<HospitalSearch />} />
         <Route path="/insurance" element={<Insurance />} />
         <Route path="/find-account" element={<FindAccount />} />
         <Route path="/change-password" element={<ChangePassword />} />

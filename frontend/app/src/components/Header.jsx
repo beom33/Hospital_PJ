@@ -55,7 +55,7 @@ export default function Header({ simplified = false }) {
                     </Link>
                   </li>
                   <li className="header-gnbitem">
-                    <Link className="p1 header-gnblink" to="/">
+                    <Link className="p1 header-gnblink" to="/hospital">
                       <span>병원찾기</span>
                     </Link>
                   </li>
@@ -206,7 +206,7 @@ export default function Header({ simplified = false }) {
             <Link to="/" onClick={() => setMenuOpen(false)}>진료 안내</Link>
           </li>
           <li className="mobile-menu-item">
-            <Link to="/" onClick={() => setMenuOpen(false)}>병원찾기</Link>
+            <Link to="/hospital" onClick={() => setMenuOpen(false)}>병원찾기</Link>
           </li>
           <li className="mobile-menu-item">
             <Link to="/" onClick={() => setMenuOpen(false)}>예약하기</Link>
