@@ -4,8 +4,11 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/AuthContext";
 
+const STATUS_LABEL = { PENDING: "대기중", CONFIRMED: "확인완료", CANCELLED: "취소됨" };
+const STATUS_COLOR = { PENDING: { background: "#fff8e1", color: "#f57c00" }, CONFIRMED: { background: "#e8f5e9", color: "#2e7d32" }, CANCELLED: { background: "#fce4ec", color: "#c62828" } };
+
 export default function MyPage() {
-  const [tab, setTab] = useState("info"); // "info" | "password"
+  const [tab, setTab] = useState("info"); // "info" | "password" | "reservation"
   const [info, setInfo] = useState({ username: "", name: "", email: "", role: "" });
   const [infoMsg, setInfoMsg] = useState("");
   const [infoError, setInfoError] = useState("");
@@ -15,6 +18,8 @@ export default function MyPage() {
   const [pwError, setPwError] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
+  const [reservations, setReservations] = useState([]);
+  const [resLoading, setResLoading] = useState(false);
   const { user, login } = useAuth();
   const navigate = useNavigate();
 
@@ -41,6 +46,33 @@ export default function MyPage() {
       .then(data => setInfo({ username: data.username, name: data.name, email: data.email, role: data.role }))
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (tab === "reservation") {
+      setResLoading(true);
+      fetch("http://localhost:8080/api/reservations/my", {
+        headers: { "Authorization": `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then(data => setReservations(data))
+        .catch(() => {})
+        .finally(() => setResLoading(false));
+    }
+  }, [tab]);
+
+  const handleCancelReservation = async (id) => {
+    if (!window.confirm("예약을 취소하시겠습니까?")) return;
+    try {
+      const res = await fetch(`http://localhost:8080/api/reservations/${id}/cancel`, {
+        method: "PUT",
+        headers: { "Authorization": `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error();
+      setReservations(prev => prev.map(r => r.id === id ? { ...r, status: "CANCELLED" } : r));
+    } catch {
+      alert("취소 중 오류가 발생했습니다.");
+    }
+  };
 
   // 회원정보 수정
   const handleInfoSubmit = async (e) => {
@@ -122,7 +154,7 @@ export default function MyPage() {
 
               {/* 탭 */}
               <div style={{ display: "flex", marginBottom: "30px", borderBottom: "2px solid #eee" }}>
-                {[["info", "회원정보 변경"], ["password", "비밀번호 변경"]].map(([key, label]) => (
+                {[["info", "회원정보 변경"], ["password", "비밀번호 변경"], ["reservation", "내 예약"]].map(([key, label]) => (
                   <button key={key} type="button" onClick={() => { setTab(key); setInfoMsg(""); setInfoError(""); setPwMsg(""); setPwError(""); }}
                     style={{
                       flex: 1, padding: "12px", border: "none", background: "none",
@@ -163,6 +195,47 @@ export default function MyPage() {
                     {isLoading ? "수정 중..." : "회원정보 수정"}
                   </button>
                 </form>
+              )}
+
+              {/* 내 예약 */}
+              {tab === "reservation" && (
+                <div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                    <p style={{ color: "#888", fontSize: "14px" }}>총 <strong>{reservations.length}</strong>건</p>
+                    <button onClick={() => navigate("/reservation")}
+                      style={{ padding: "8px 16px", background: "#e63946", color: "#fff", border: "none", borderRadius: "8px", fontSize: "13px", cursor: "pointer", fontWeight: "600" }}>
+                      + 예약 신청
+                    </button>
+                  </div>
+                  {resLoading ? (
+                    <p style={{ textAlign: "center", color: "#888", padding: "30px" }}>불러오는 중...</p>
+                  ) : reservations.length === 0 ? (
+                    <p style={{ textAlign: "center", color: "#aaa", padding: "30px" }}>예약 내역이 없습니다.</p>
+                  ) : (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                      {reservations.map(r => (
+                        <div key={r.id} style={{ border: "1px solid #eee", borderRadius: "10px", padding: "16px", background: "#fafafa" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
+                            <span style={{ fontWeight: "700", fontSize: "16px", color: "#1a1a2e" }}>{r.department}</span>
+                            <span style={{ ...STATUS_COLOR[r.status], padding: "3px 10px", borderRadius: "20px", fontSize: "12px", fontWeight: "600" }}>
+                              {STATUS_LABEL[r.status]}
+                            </span>
+                          </div>
+                          <p style={{ color: "#555", fontSize: "14px", marginBottom: "4px" }}>
+                            📅 {r.reservationDate} {r.reservationTime}
+                          </p>
+                          {r.symptom && <p style={{ color: "#888", fontSize: "13px", marginBottom: "4px" }}>증상: {r.symptom}</p>}
+                          {r.status === "PENDING" && (
+                            <button onClick={() => handleCancelReservation(r.id)}
+                              style={{ marginTop: "8px", padding: "6px 14px", background: "#fff", color: "#e63946", border: "1px solid #e63946", borderRadius: "6px", fontSize: "13px", cursor: "pointer" }}>
+                              예약 취소
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               )}
 
               {/* 비밀번호 변경 */}
