@@ -5,21 +5,6 @@ import Footer from "../components/Footer";
 
 const KAKAO_APP_KEY = "edf4ef8eb3fc341901f0d49a3a819574";
 
-const DEPARTMENTS = [
-  { label: "전체", keyword: "병원" },
-  { label: "내과", keyword: "내과" },
-  { label: "외과", keyword: "외과" },
-  { label: "정형외과", keyword: "정형외과" },
-  { label: "치과", keyword: "치과" },
-  { label: "소아과", keyword: "소아청소년과" },
-  { label: "피부과", keyword: "피부과" },
-  { label: "안과", keyword: "안과" },
-  { label: "이비인후과", keyword: "이비인후과" },
-  { label: "산부인과", keyword: "산부인과" },
-  { label: "정신건강", keyword: "정신건강의학과" },
-  { label: "한의원", keyword: "한의원" },
-  { label: "약국", keyword: "약국" },
-];
 
 const EXTRA_FILTERS = [
   { label: "야간진료", keyword: "야간" },
@@ -27,6 +12,36 @@ const EXTRA_FILTERS = [
   { label: "여의사", keyword: "여의사" },
   { label: "응급실", keyword: "응급실" },
 ];
+
+
+
+const ALL_DEPARTMENTS = [
+  { label: "전체", keyword: "병원" },
+  { label: "소아청소년과", keyword: "소아청소년과" },
+  { label: "치과", keyword: "치과" },
+  { label: "내과", keyword: "내과" },
+  { label: "이비인후과", keyword: "이비인후과" },
+  { label: "피부과", keyword: "피부과" },
+  { label: "산부인과", keyword: "산부인과" },
+  { label: "안과", keyword: "안과" },
+  { label: "정신건강의학과", keyword: "정신건강의학과" },
+  { label: "성형외과", keyword: "성형외과" },
+  { label: "정형외과", keyword: "정형외과" },
+  { label: "한의원", keyword: "한의원" },
+  { label: "비뇨기과", keyword: "비뇨의학과" },
+  { label: "가정의학과", keyword: "가정의학과" },
+  { label: "신경외과", keyword: "신경외과" },
+  { label: "외과", keyword: "외과" },
+  { label: "흉부외과", keyword: "흉부외과" },
+  { label: "마취통증과", keyword: "마취통증의학과" },
+  { label: "영상의학과", keyword: "영상의학과" },
+  { label: "신경과", keyword: "신경과" },
+  { label: "재활의학과", keyword: "재활의학과" },
+  { label: "예방의학과", keyword: "예방의학과" },
+  { label: "응급의학과", keyword: "응급의학과" },
+  { label: "약국", keyword: "약국" },
+];
+
 
 export default function HospitalSearch() {
   const mapRef = useRef(null);
@@ -37,8 +52,9 @@ export default function HospitalSearch() {
 
   const [hospitals, setHospitals] = useState([]);
   const [keyword, setKeyword] = useState("");
-  const [selectedDept, setSelectedDept] = useState(DEPARTMENTS[0]);
+  const [selectedDept, setSelectedDept] = useState(ALL_DEPARTMENTS[0]);
   const [activeFilters, setActiveFilters] = useState([]);
+  const [showDeptModal, setShowDeptModal] = useState(false);
   const [selectedHospital, setSelectedHospital] = useState(null);
   const [loading, setLoading] = useState(false);
   const [locationError, setLocationError] = useState("");
@@ -259,31 +275,24 @@ export default function HospitalSearch() {
           </div>
 
           {/* 진료과 필터 */}
-          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "10px" }}>
-            {DEPARTMENTS.map((dept) => (
-              <button
-                key={dept.label}
-                onClick={() => handleDeptClick(dept)}
-                style={{
-                  padding: "6px 14px",
-                  borderRadius: "20px",
-                  border: selectedDept.label === dept.label ? "2px solid #1a5f7a" : "1px solid #ddd",
-                  background: selectedDept.label === dept.label ? "#1a5f7a" : "#fff",
-                  color: selectedDept.label === dept.label ? "#fff" : "#555",
-                  fontSize: "13px",
-                  fontWeight: selectedDept.label === dept.label ? "600" : "400",
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                  transition: "all 0.15s",
-                }}
-              >
-                {dept.label}
-              </button>
-            ))}
-          </div>
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "10px", alignItems: "center" }}>
+            {/* 전체 진료과 버튼 */}
+            <button
+              onClick={() => setShowDeptModal(true)}
+              style={{
+                padding: "6px 14px", borderRadius: "20px",
+                border: selectedDept.label === "전체" ? "2px solid #1a5f7a" : "1px solid #1a5f7a",
+                background: selectedDept.label === "전체" ? "#1a5f7a" : "#fff",
+                color: selectedDept.label === "전체" ? "#fff" : "#1a5f7a",
+                fontSize: "13px", fontWeight: "600", cursor: "pointer", whiteSpace: "nowrap",
+              }}
+            >
+              {selectedDept.label === "전체" ? "전체 ▾" : `${selectedDept.label} ▾`}
+            </button>
+            {/* 구분선 */}
+            <span style={{ color: "#ddd", fontSize: "18px", userSelect: "none" }}>|</span>
 
-          {/* 추가 필터 */}
-          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "14px" }}>
+            {/* 추가 필터 (야간진료, 휴일진료 등) */}
             {EXTRA_FILTERS.map((filter) => {
               const isActive = activeFilters.includes(filter);
               return (
@@ -291,16 +300,12 @@ export default function HospitalSearch() {
                   key={filter.label}
                   onClick={() => toggleFilter(filter)}
                   style={{
-                    padding: "5px 12px",
-                    borderRadius: "20px",
+                    padding: "6px 14px", borderRadius: "20px",
                     border: isActive ? "2px solid #e63946" : "1px solid #ddd",
                     background: isActive ? "#fff0f1" : "#fff",
                     color: isActive ? "#e63946" : "#888",
-                    fontSize: "12px",
-                    fontWeight: isActive ? "600" : "400",
-                    cursor: "pointer",
-                    whiteSpace: "nowrap",
-                    transition: "all 0.15s",
+                    fontSize: "13px", fontWeight: isActive ? "600" : "400",
+                    cursor: "pointer", whiteSpace: "nowrap", transition: "all 0.15s",
                   }}
                 >
                   {isActive ? "✓ " : ""}{filter.label}
@@ -309,6 +314,43 @@ export default function HospitalSearch() {
             })}
           </div>
 
+          {/* 전체 진료과 모달 */}
+          {showDeptModal && (
+            <div
+              onClick={() => setShowDeptModal(false)}
+              style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}
+            >
+              <div
+                onClick={(e) => e.stopPropagation()}
+                style={{ background: "#fff", borderRadius: "12px", padding: "24px", width: "480px", maxWidth: "90vw", maxHeight: "80vh", overflowY: "auto", boxShadow: "0 8px 32px rgba(0,0,0,0.2)" }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                  <h3 style={{ margin: 0, fontSize: "18px", color: "#1a1a1a" }}>어떤 병원을 찾고 계신가요?</h3>
+                  <button onClick={() => setShowDeptModal(false)} style={{ background: "none", border: "none", fontSize: "20px", cursor: "pointer", color: "#888" }}>✕</button>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px" }}>
+                  {ALL_DEPARTMENTS.map((dept) => (
+                    <button
+                      key={dept.label}
+                      onClick={() => { handleDeptClick(dept); setShowDeptModal(false); }}
+                      style={{
+                        padding: "12px 8px", borderRadius: "8px",
+                        border: selectedDept.label === dept.label ? "2px solid #1a5f7a" : "1px solid #e0e0e0",
+                        background: selectedDept.label === dept.label ? "#e8f5e9" : "#fff",
+                        color: selectedDept.label === dept.label ? "#1a5f7a" : "#333",
+                        fontSize: "14px", fontWeight: selectedDept.label === dept.label ? "600" : "400",
+                        cursor: "pointer", transition: "all 0.15s", textAlign: "center",
+                      }}
+                    >
+                      {dept.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+       
           {/* 오류 메시지 */}
           {locationError && (
             <div style={{ marginBottom: "12px", padding: "10px 14px", background: "#fff3f3", border: "1px solid #f5c6c6", borderRadius: "6px", color: "#c0392b", fontSize: "13px" }}>
