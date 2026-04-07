@@ -13,7 +13,6 @@ import ChangePassword from "./pages/ChangePassword";
 import MyPage from "./pages/MyPage";
 import ProfilePage from "./pages/ProfilePage";
 import AdminPage from "./pages/AdminPage";
-import ReservationPage from "./pages/ReservationPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
@@ -39,11 +38,6 @@ function App() {
         <Route path="/insurance" element={<Insurance />} />
         <Route path="/find-account" element={<FindAccount />} />
         <Route path="/change-password" element={<ChangePassword />} />
-        <Route path="/reservation" element={
-          <ProtectedRoute>
-            <ReservationPage />
-          </ProtectedRoute>
-        } />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/admin" element={

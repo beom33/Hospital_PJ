@@ -59,11 +59,7 @@ export default function Header({ simplified = false }) {
                       <span>병원찾기</span>
                     </Link>
                   </li>
-                  <li className="header-gnbitem">
-                    <Link className="p1 header-gnblink" to="/reservation">
-                      <span>예약하기</span>
-                    </Link>
-                  </li>
+              
                   <li className="header-gnbitem">
                     <Link className="p1 header-gnblink" to="/notice">
                       <span>공지사항</span>
@@ -208,9 +204,7 @@ export default function Header({ simplified = false }) {
           <li className="mobile-menu-item">
             <Link to="/hospital" onClick={() => setMenuOpen(false)}>병원찾기</Link>
           </li>
-          <li className="mobile-menu-item">
-            <Link to="/reservation" onClick={() => setMenuOpen(false)}>예약하기</Link>
-          </li>
+      
           <li className="mobile-menu-item">
             <Link to="/notice" onClick={() => setMenuOpen(false)}>공지사항</Link>
           </li>
