@@ -6,8 +6,8 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { FaRegCalendarCheck } from "react-icons/fa";
-import { FaMapMarkedAlt } from "react-icons/fa";
+import { TbScanPosition } from "react-icons/tb";
+import { MdNightsStay } from "react-icons/md";
 import { MdConnectWithoutContact } from "react-icons/md";
 
 export default function Home() {
@@ -100,14 +100,14 @@ export default function Home() {
                 <ul className="cardset-list">
                   <li className="cardset-item">
                    <figure className="cardset-figure">
-              <FaRegCalendarCheck className="cardset-icon" />
+              <MdNightsStay className="cardset-icon" />
        </figure>
           <div className="cardset-body">
-           <strong className="h4 cardset-tit">진료 예약</strong>
+           <strong className="h4 cardset-tit">평일 야간 진료</strong>
            <p className="p1 cardset-desc">
-              간편하게 온라인으로
+              반차 쓰지 않고
                <br />
-             진료 예약을 할 수 있습니다.
+             진료 가능합니다.
                </p>
                   </div>
 
@@ -115,7 +115,7 @@ export default function Home() {
                   </li>
                   <li className="cardset-item">
                     <figure className="cardset-figure">
-                      <FaMapMarkedAlt className="cardset-icon" /> 
+                      <TbScanPosition className="cardset-icon" /> 
                     </figure>
                     <div className="cardset-body">
                       <strong className="h4 cardset-tit">위치서비스</strong>
