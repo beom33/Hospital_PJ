@@ -411,7 +411,7 @@ html, body {
 }
 
 .page-header {
-  padding: 100px 0 30px;
+  padding:  50px 0 30px;
   text-align: center;
   background: linear-gradient(135deg, #c2cef0 0%, #4b5fa2 100%);
   margin: 0 -20px 30px;

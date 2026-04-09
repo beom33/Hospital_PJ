@@ -44,7 +44,7 @@ export default function Header({ simplified = false }) {
             <div className="header-left">
               <h1 className="header-title">
                 <Link to="/">
-                  <img src="/resources/images/medi_logo.png" alt="Medi-best" style={{ height: "80px", width: "auto" }} />
+                  <img src="/resources/images/medi_logo.png" alt="Medi-best" style={{ height: "75px", width: "auto" }} />
                 </Link>
               </h1>
               <nav className="header-gnb desktop-only">
