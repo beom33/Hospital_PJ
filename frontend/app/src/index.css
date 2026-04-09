@@ -89,16 +89,22 @@ html, body {
   z-index: auto !important;
 }
 
-/* 헤더 투명 배경 및 줄 제거 */
+/* 헤더 흰색 배경 + 스크롤 시 따라오지 않음 */
+.th-layout-header .temhamain1-N1 {
+  position: static !important;
+}
+.th-layout-header .header-container {
+  position: relative !important;
+}
 .th-layout-header,
 .th-layout-header .temhamain1-N1,
 .th-layout-header .header-container {
-  background: transparent !important;
-  background-color: transparent !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
   border: none !important;
-  box-shadow: none !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
   border-top: none !important;
-  border-bottom: none !important;
+  border-bottom: 1px solid #e8e8e8 !important;
 }
 
 /* 헤더 가상요소 줄 제거 */
@@ -151,7 +157,7 @@ html, body {
   display: block;
   width: 24px;
   height: 3px;
-  background-color: #ffffff;
+  background-color: #333333;
   border-radius: 2px;
   transition: all 0.3s ease;
 }
@@ -180,6 +186,26 @@ html, body {
 
 /* 반응형 - 992px 이하 (태블릿/모바일) */
 @media (max-width: 992px) {
+  /* 모바일 헤더 컨테이너 높이 축소 */
+  .th-layout-header .temhamain1-N1 .header-container {
+    min-height: 70px !important;
+    padding: 0 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  /* 모바일 로고 크기 및 위치 */
+  .th-layout-header .header-title {
+    line-height: 1.4 !important;
+  }
+  .th-layout-header .header-title img {
+    height: 70px !important;
+    width: auto !important;
+    display: block !important;
+    margin-top: -20px !important;
+  }
+
   .th-layout-header .btn-momenu {
     display: flex !important;
     flex-direction: column !important;
@@ -200,7 +226,7 @@ html, body {
     display: block !important;
     width: 24px !important;
     height: 3px !important;
-    background-color: #ffffff !important;
+    background-color: #333333 !important;
     border-radius: 2px !important;
   }
 
@@ -385,9 +411,9 @@ html, body {
 }
 
 .page-header {
-  padding: 60px 0 30px;
+  padding: 100px 0 30px;
   text-align: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #c2cef0 0%, #4b5fa2 100%);
   margin: 0 -20px 30px;
   color: white;
 }
