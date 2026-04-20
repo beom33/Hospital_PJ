@@ -14,7 +14,7 @@ export default function SideMenu() {
       ],
     },
     {
-      title: "진료안내",
+      title: "의료 정보",
       path: "/insurance",
       subItems: [
         { title: "보험적용확인", path: "/insurance" },
