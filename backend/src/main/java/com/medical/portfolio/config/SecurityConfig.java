@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/api/medical-fees/**").permitAll()
+                        .requestMatchers("/api/drugs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/notices/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/notices").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/notices", "/api/notices/**").authenticated()
