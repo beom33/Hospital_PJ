@@ -50,7 +50,8 @@ export default function MedicinePage() {
         setPermitResults(Array.isArray(items) ? items : [items]);
       }
     } catch (e) {
-      setError("검색 중 오류가 발생했습니다. API 키를 확인해주세요.");
+      console.error("약품 검색 오류:", e);
+      setError("오류: " + e.message);
     } finally {
       setLoading(false);
     }
