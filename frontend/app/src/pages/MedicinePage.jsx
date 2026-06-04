@@ -16,6 +16,7 @@ const ETC_LABELS = {
 
 export default function MedicinePage() {
   const [keyword, setKeyword] = useState("");
+  const [searchedKeyword, setSearchedKeyword] = useState("");
   const [results, setResults] = useState([]);
   const [permitResults, setPermitResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -30,6 +31,7 @@ export default function MedicinePage() {
     setResults([]);
     setPermitResults([]);
     setSearched(true);
+    setSearchedKeyword(keyword);
     setExpandedId(null);
 
     try {
@@ -135,7 +137,7 @@ export default function MedicinePage() {
                 {b.text}
               </span>
             ))}
-            <span style={{ fontSize: "12px", color: "#999", alignSelf: "center", marginLeft: "4px" }}>← 검색 결과에 표시되는 분류입니다</span>
+            <span style={{ fontSize: "12px", color: "#131212ff", alignSelf: "center", marginLeft: "4px" }}>← 검색 결과에 표시되는 분류입니다</span>
           </div>
 
           {/* 오류 */}
@@ -150,7 +152,7 @@ export default function MedicinePage() {
 
           {/* 로딩 */}
           {loading && (
-            <div style={{ textAlign: "center", padding: "40px", color: "#888" }}>
+            <div style={{ textAlign: "center", padding: "40px", color: "#000000ff" }}>
               <div style={{ fontSize: "32px", marginBottom: "8px" }}>💊</div>
               <p>약품 정보를 검색 중입니다...</p>
             </div>
@@ -158,9 +160,9 @@ export default function MedicinePage() {
 
           {/* 결과 없음 */}
           {!loading && searched && results.length === 0 && !error && (
-            <div style={{ textAlign: "center", padding: "40px", color: "#aaa" }}>
+            <div style={{ textAlign: "center", padding: "40px", color: "#131212ff" }}>
               <div style={{ fontSize: "40px", marginBottom: "8px" }}>🔍</div>
-              <p>"{keyword}"에 대한 검색 결과가 없습니다.</p>
+              <p>"{searchedKeyword}"에 대한 검색 결과가 없습니다.</p>
               <p style={{ fontSize: "13px" }}>정확한 약품명으로 다시 검색해보세요.</p>
             </div>
           )}
@@ -168,7 +170,7 @@ export default function MedicinePage() {
           {/* 검색 결과 */}
           {!loading && results.length > 0 && (
             <div>
-              <p style={{ fontSize: "14px", color: "#666", marginBottom: "12px" }}>
+              <p style={{ fontSize: "14px", color: "#000000ff", marginBottom: "12px" }}>
                 총 <strong>{results.length}</strong>건 검색됨
               </p>
 
@@ -260,7 +262,7 @@ export default function MedicinePage() {
           )}
 
           {/* 안내문 */}
-          <p style={{ marginTop: "24px", fontSize: "12px", color: "#aaa", lineHeight: "1.6" }}>
+          <p style={{ marginTop: "24px", fontSize: "12px", color: "#0a0a0aff", lineHeight: "1.6" }}>
             ※ 본 정보는 식품의약품안전처 공공데이터를 기반으로 제공됩니다.<br />
             ※ 의약품 복용 전 반드시 의사·약사와 상담하시고, 본 정보를 의료적 판단의 근거로 사용하지 마세요.
           </p>
