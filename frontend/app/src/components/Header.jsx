@@ -77,22 +77,22 @@ export default function Header({ simplified = false }) {
               <div className="header-utils desktop-only">
                 {isLoggedIn ? (
                   <ul style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                    <li className="p1" style={{ color: "#fff", whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: "8px" }}>
-                                 
+                    <li className="p1" style={{ color: "#222", whiteSpace: "nowrap", display: "flex", alignItems: "center", gap: "8px" }}>
+
                 <Link to="/profile">
                         {user.profileImage ? (
                           <img
                             src={`http://localhost:8080/uploads/${user.profileImage}`}
                             alt="프로필"
-                            style={{ width: "30px", height: "30px", borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(255,255,255,0.5)", cursor: "pointer" }}
+                            style={{ width: "30px", height: "30px", borderRadius: "50%", objectFit: "cover", border: "2px solid #ddd", cursor: "pointer" }}
                           />
                         ) : (
-                          <div style={{ width: "30px", height: "30px", borderRadius: "50%", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", cursor: "pointer" }}>
+                          <div style={{ width: "30px", height: "30px", borderRadius: "50%", background: "#e8f0fe", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", cursor: "pointer" }}>
                             👤
                           </div>
                         )}
                         </Link>
-                    
+
                       {user.nickname || user.name}님
                       {isAdmin && (
                         <Link to="/admin" style={{ textDecoration: "none" }}>
@@ -112,7 +112,7 @@ export default function Header({ simplified = false }) {
                       )}
                     </li>
                     <li className="button">
-                      <Link to="/mypage" className="p1 btnset btnset-sm" style={{ background: "transparent", border: "rgba(255,255,255,0.5)", color: "#fff" }}>
+                      <Link to="/mypage" className="p1 btnset btnset-primary btnset-sm">
                         마이페이지
                       </Link>
                     </li>
@@ -120,7 +120,7 @@ export default function Header({ simplified = false }) {
                       <button
                         onClick={handleLogout}
                         className="p1 btnset btnset-primary btnset-sm"
-                        style={{ cursor: "pointer" }}
+                        style={{ cursor: "pointer", border: "none", background: "#e63946", color: "#fff", padding: "6px 16px", borderRadius: "4px", fontSize: "14px", fontWeight: "600" }}
                       >
                         로그아웃
                       </button>
@@ -192,6 +192,22 @@ export default function Header({ simplified = false }) {
               >
                 로그아웃
               </button>
+                 <Link to="/mypage" onClick={() => setMenuOpen(false)}>
+               <button
+                onClick={() => setMenuOpen(false) }
+                style={{
+                  background: "#e63946",
+                  color: "#fff",
+                  border: "none",
+                  padding: "6px 14px",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontSize: "14px"
+                }}
+              >
+                마이페이지
+              </button>
+              </Link>
             </div>
           ) : (
             <Link to="/login" onClick={() => setMenuOpen(false)}>→ 로그인을 해주세요.</Link>
@@ -211,6 +227,7 @@ export default function Header({ simplified = false }) {
           <li className="mobile-menu-item">
             <Link to="/insurance" onClick={() => setMenuOpen(false)}>비급여확인</Link>
           </li>
+        
         </ul>
       </div>
     </>

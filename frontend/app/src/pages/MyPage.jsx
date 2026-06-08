@@ -8,7 +8,7 @@ const STATUS_LABEL = { PENDING: "대기중", CONFIRMED: "확인완료", CANCELLE
 const STATUS_COLOR = { PENDING: { background: "#fff8e1", color: "#f57c00" }, CONFIRMED: { background: "#e8f5e9", color: "#2e7d32" }, CANCELLED: { background: "#fce4ec", color: "#c62828" } };
 
 export default function MyPage() {
-  const [tab, setTab] = useState("info"); // "info" | "password" | "reservation"
+  const [tab, setTab] = useState("info"); // "info" | "password" | "reservation" | "withdraw"
   const [info, setInfo] = useState({ username: "", name: "", email: "", role: "" });
   const [infoMsg, setInfoMsg] = useState("");
   const [infoError, setInfoError] = useState("");
@@ -20,7 +20,9 @@ export default function MyPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [reservations, setReservations] = useState([]);
   const [resLoading, setResLoading] = useState(false);
-  const { user, login } = useAuth();
+  const [withdrawPassword, setWithdrawPassword] = useState("");
+  const [withdrawError, setWithdrawError] = useState("");
+  const { user, login, logout } = useAuth();
   const navigate = useNavigate();
 
   const token = sessionStorage.getItem("token");
@@ -71,6 +73,25 @@ export default function MyPage() {
       setReservations(prev => prev.map(r => r.id === id ? { ...r, status: "CANCELLED" } : r));
     } catch {
       alert("취소 중 오류가 발생했습니다.");
+    }
+  };
+
+  // 회원탈퇴
+  const handleWithdraw = async () => {
+    if (!withdrawPassword) { setWithdrawError("비밀번호를 입력해주세요."); return; }
+    if (!window.confirm("정말 탈퇴하시겠습니까? 모든 데이터가 삭제되며 복구할 수 없습니다.")) return;
+    try {
+      const res = await fetch("http://localhost:8080/api/profile", {
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ password: withdrawPassword }),
+      });
+      if (!res.ok) { setWithdrawError(await res.text()); return; }
+      alert("회원탈퇴가 완료되었습니다.");
+      logout();
+      navigate("/");
+    } catch {
+      setWithdrawError("탈퇴 중 오류가 발생했습니다.");
     }
   };
 
@@ -154,7 +175,7 @@ export default function MyPage() {
 
               {/* 탭 */}
               <div style={{ display: "flex", marginBottom: "30px", borderBottom: "2px solid #eee" }}>
-                {[["info", "회원정보 변경"], ["password", "비밀번호 변경"], ["reservation", "내 예약"]].map(([key, label]) => (
+                {[["info", "회원정보 변경"], ["password", "비밀번호 변경"], ["reservation", "내 예약"], ["withdraw", "회원탈퇴"]].map(([key, label]) => (
                   <button key={key} type="button" onClick={() => { setTab(key); setInfoMsg(""); setInfoError(""); setPwMsg(""); setPwError(""); }}
                     style={{
                       flex: 1, padding: "12px", border: "none", background: "none",
@@ -235,6 +256,31 @@ export default function MyPage() {
                       ))}
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* 회원탈퇴 */}
+              {tab === "withdraw" && (
+                <div>
+                  <div style={{ background: "#fff3f3", border: "1px solid #ffcdd2", borderRadius: "8px", padding: "16px", marginBottom: "24px" }}>
+                    <p style={{ color: "#c0392b", fontWeight: "600", marginBottom: "8px" }}>⚠️ 탈퇴 전 꼭 확인하세요</p>
+                    <ul style={{ color: "#555", fontSize: "14px", lineHeight: "1.8", paddingLeft: "18px" }}>
+                      <li>탈퇴 시 모든 개인정보가 삭제됩니다.</li>
+                      <li>작성한 공지사항 등 데이터는 삭제됩니다.</li>
+                      <li>탈퇴 후 복구가 불가능합니다.</li>
+                    </ul>
+                  </div>
+                  <div style={{ marginBottom: "16px" }}>
+                    <label className="p2" style={{ display: "block", marginBottom: "8px", color: "#333", fontWeight: "500" }}>비밀번호 확인 *</label>
+                    <input type="password" value={withdrawPassword}
+                      onChange={(e) => { setWithdrawPassword(e.target.value); setWithdrawError(""); }}
+                      placeholder="현재 비밀번호를 입력하세요" style={inputStyle} />
+                  </div>
+                  {withdrawError && <div style={{ padding: "12px", background: "#fee", color: "#c33", borderRadius: "8px", marginBottom: "16px", fontSize: "14px", textAlign: "center" }}>{withdrawError}</div>}
+                  <button type="button" onClick={handleWithdraw}
+                    style={{ width: "100%", padding: "16px", fontSize: "16px", fontWeight: "600", borderRadius: "8px", cursor: "pointer", background: "#c0392b", color: "#fff", border: "none" }}>
+                    회원탈퇴
+                  </button>
                 </div>
               )}
 

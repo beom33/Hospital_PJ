@@ -15,10 +15,12 @@ import ProfilePage from "./pages/ProfilePage";
 import AdminPage from "./pages/AdminPage";
 import MedicinePage from "./pages/MedicinePage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ChatBot from "./components/ChatBot";
 
 function App() {
   return (
     <Router>
+      <ChatBot />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

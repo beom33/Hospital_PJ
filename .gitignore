@@ -1,2 +1,10 @@
 nul
 NUL
+
+# 빌드 결과물
+backend/target/
+frontend/app/node_modules/
+frontend/app/dist/
+
+# 민감 정보 (로컬 설정)
+application-local.properties

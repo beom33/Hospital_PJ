@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
@@ -11,6 +12,20 @@ import { MdNightsStay } from "react-icons/md";
 import { MdConnectWithoutContact } from "react-icons/md";
 
 export default function Home() {
+  const [notices, setNotices] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/notices?page=0&size=4")
+      .then(res => res.json())
+      .then(data => setNotices(data.content || []))
+      .catch(() => {});
+  }, []);
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    return dateStr.slice(0, 10).replace(/-/g, ".");
+  };
+
   return (
     <>
       <Header />
@@ -183,7 +198,6 @@ export default function Home() {
                         최신 의료장비와 전문 의료진이 정밀한 검진을 진행합니다.
                       </p>
                     </div>
-                    <Link className="p1 btnset btnset-md btnset-primary" to="/register">자세히보기</Link>
                   </div>
                 </div>
                 <div className="contents-right">
@@ -231,49 +245,21 @@ export default function Home() {
               <div className="contents-inner">
                 <div className="contents-top">
                   <h2 className="h2 contents-tit">공지사항</h2>
-                  <a className="p1 contents-link" href="#">VIEW MORE</a>
+                  <Link className="p1 contents-link" to="/notice">VIEW MORE</Link>
                 </div>
                 <div className="cardset-wrap">
-                  <a className="cardset" href="#">
-                    <figure className="cardset-figure">
-                      <img src="/resources/images/img_N7_01.png" alt="카드 이미지" />
-                    </figure>
-                    <div className="cardset-body">
-                      <h5 className="h5 cardset-tit">온라인 진료 예약 서비스 오픈</h5>
-                      <p className="p1 cardset-desc">편리한 온라인 진료 예약 서비스를 시작합니다.</p>
-                      <span className="p2 cardset-date">2024.01.14</span>
-                    </div>
-                  </a>
-                  <a className="cardset" href="#">
-                    <figure className="cardset-figure">
-                      <img className="cardset-img" src="/resources/images/img_N7_02.png" alt="카드 이미지" />
-                    </figure>
-                    <div className="cardset-body">
-                      <h5 className="h5 cardset-tit">건강검진 패키지 안내</h5>
-                      <p className="p1 cardset-desc">다양한 건강검진 패키지를 확인해보세요.</p>
-                      <span className="p2 cardset-date">2024.01.10</span>
-                    </div>
-                  </a>
-                  <a className="cardset" href="#">
-                    <figure className="cardset-figure">
-                      <img className="cardset-img" src="/resources/images/img_N7_03.png" alt="카드 이미지" />
-                    </figure>
-                    <div className="cardset-body">
-                      <h5 className="h5 cardset-tit">진료 시간 변경 안내</h5>
-                      <p className="p1 cardset-desc">진료 시간이 변경되었습니다. 확인해주세요.</p>
-                      <span className="p2 cardset-date">2024.01.05</span>
-                    </div>
-                  </a>
-                  <a className="cardset" href="#">
-                    <figure className="cardset-figure">
-                      <img className="cardset-img" src="/resources/images/img_N7_04.png" alt="카드 이미지" />
-                    </figure>
-                    <div className="cardset-body">
-                      <h5 className="h5 cardset-tit">신규 전문의 영입 안내</h5>
-                      <p className="p1 cardset-desc">새로운 전문의가 합류했습니다.</p>
-                      <span className="p2 cardset-date">2024.01.02</span>
-                    </div>
-                  </a>
+                  {notices.length > 0 ? notices.map((notice) => (
+                    <Link className="cardset" to={`/notice/${notice.id}`} key={notice.id}>
+                    
+                      <div className="cardset-body">
+                        <h5 className="h5 cardset-tit">{notice.title}</h5>
+                        <p className="p1 cardset-desc">{notice.content?.slice(0, 40)}...</p>
+                        <span className="p2 cardset-date">{formatDate(notice.createdAt)}</span>
+                      </div>
+                    </Link>
+                  )) : (
+                    <p style={{ color: "#aaa", padding: "20px" }}>등록된 공지사항이 없습니다.</p>
+                  )}
                 </div>
               </div>
             </div>
